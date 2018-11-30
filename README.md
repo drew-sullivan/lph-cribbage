@@ -32,7 +32,9 @@ npm run lint
 3. In `docs/index.html`, find and replace `src=/` with `src=`.
 4. Commit your changes (or else the next step won't work).
 4. In the repo's Github Pages settings, change the `Source` from `gh-pages branch` to `master branch/docs folder`.
-5. When merging to the master branch, delete `docs`, and follow the instructions from step 1.
+
+#### After merging to the master branch:
+Delete `docs`. Follow instructions from step 1.
 
 ### Vue Reference
 See [Configuration Reference](https://cli.vuejs.org/config/).
