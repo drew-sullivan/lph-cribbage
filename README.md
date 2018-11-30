@@ -1,4 +1,4 @@
-# lyman-cribbage
+# LPH Cribbage
 
 ## Project setup
 ```
