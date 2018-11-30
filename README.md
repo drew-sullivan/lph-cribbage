@@ -36,5 +36,8 @@ npm run lint
 #### After merging to the master branch:
 Delete `docs`. Follow instructions from step 1.
 
-### Vue Reference
+### Vue Config Reference
 See [Configuration Reference](https://cli.vuejs.org/config/).
+
+### Vue Docs
+[Docs](https://vuejs.org/v2/guide/)
