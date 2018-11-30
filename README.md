@@ -30,7 +30,8 @@ npm run lint
 1. On your master branch, run `npm run build`.
 2. Change the name of the `dist` folder to `docs`.
 3. In `docs/index.html`, find and replace `src=/` with `src=`.
-4. In the repo's settings, change your `Source` in your Github Pages settings from `gh-pages branch` to `master branch/docs folder`. **NOTE**: you must have a `docs` folder committed in the project to do this.
+4. Commit your changes (or else the next step won't work).
+4. In the repo's Github Pages settings, change the `Source` from `gh-pages branch` to `master branch/docs folder`.
 5. When merging to the master branch, delete `docs`, and follow the instructions from step 1.
 
 ### Vue Reference
