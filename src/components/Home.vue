@@ -11,6 +11,14 @@
     <main role="main" class="container">
       <h1 class="mt-5">LPH Cribbage</h1>
       <p class="lead">Game's gonna go here</p>
+      <button class="start-btn btn btn-primary">Start Game</button>
+      <template>
+        <ul v-if="todos && todos.length">
+          <li v-for="todo of todos">
+            <h2></h2>
+          </li>
+        </ul>
+      </template>
     </main>
 
     <footer class="footer">
@@ -22,8 +30,20 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
-  name: 'HelloWorld',
+  created() {
+    axios.get('http://jsonplaceholder.typicode.com/todos')
+    .then(response => this.todos = response.data)
+    .catch(error => console.log(error))
+  },
+  data() {
+    return {
+      todos: []
+    }
+  },
+  name: 'Home',
   props: {
     msg: String
   }
@@ -45,6 +65,12 @@ li {
 }
 a {
   color: #42b983;
+}
+
+start-btn {
+  display: flex;
+  margin: 0 auto;
+  align-items: center;
 }
 
 /* Sticky footer styles
