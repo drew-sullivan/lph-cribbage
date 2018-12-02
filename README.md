@@ -28,8 +28,11 @@ npm run test
 npm run lint
 ```
 
+### Cards Provided by Deck of Cards API
+[Deck of Cards API](http://deckofcardsapi.com/)
+
 ### Vue Config Reference
-See [Configuration Reference](https://cli.vuejs.org/config/).
+See [Configuration Reference](https://cli.vuejs.org/config/)
 
 ### Vue Docs
 [Docs](https://vuejs.org/v2/guide/)
