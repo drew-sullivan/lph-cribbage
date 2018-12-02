@@ -1,5 +1,8 @@
 # LPH Cribbage
 
+### Deployed via Netlify
+[Demo](https://eloquent-bartik-67d9e0.netlify.com/)
+
 ## Project setup
 ```
 npm install
@@ -24,9 +27,6 @@ npm run test
 ```
 npm run lint
 ```
-
-### Deployed via Netlify
-[Demo](https://eloquent-bartik-67d9e0.netlify.com/)
 
 ### Vue Config Reference
 See [Configuration Reference](https://cli.vuejs.org/config/).

@@ -13,9 +13,9 @@
       <p class="lead">Game's gonna go here</p>
       <button class="start-btn btn btn-primary">Start Game</button>
       <template>
-        <ul v-if="todos && todos.length">
-          <li v-for="todo of todos">
-            <h2></h2>
+        <ul v-if="cards && cards.length">
+          <li v-for="(card, index)  in cards" :key="index">
+            <img :src="card.image" alt="cardPic">
           </li>
         </ul>
       </template>
@@ -34,18 +34,32 @@ import axios from 'axios';
 
 export default {
   created() {
-    axios.get('http://jsonplaceholder.typicode.com/todos')
-    .then(response => this.todos = response.data)
-    .catch(error => console.log(error))
+    this.getDeckFromAPI()
   },
   data() {
     return {
-      todos: []
+      cards: [],
+      deckID: ''
     }
   },
   name: 'Home',
   props: {
     msg: String
+  },
+  methods: {
+    getDeckFromAPI() {
+      axios.get('https://deckofcardsapi.com/api/deck/new/')
+      .then(response => {
+        this.deckID = response.data['deck_id']
+        this.printAllCards()
+      })
+      .catch(error => console.log(error))
+    },
+    printAllCards() {
+      axios.get(`https://deckofcardsapi.com/api/deck/${this.deckID}/draw/?count=52`)
+      .then(response => this.cards = response.data.cards)
+      .catch(error => console.log(error))
+    }
   }
 }
 </script>
