@@ -39,7 +39,9 @@ export default {
   data() {
     return {
       cards: [],
-      deckID: ''
+      deckID: '',
+      player1Hand: [],
+      player2Hand: []
     }
   },
   name: 'Home',
@@ -52,11 +54,17 @@ export default {
       .then(response => {
         this.deckID = response.data['deck_id']
         this.printAllCards()
+        this.dealCards()
       })
       .catch(error => console.log(error))
     },
     printAllCards() {
       axios.get(`https://deckofcardsapi.com/api/deck/${this.deckID}/draw/?count=52`)
+      .then(response => this.cards = response.data.cards)
+      .catch(error => console.log(error))
+    },
+    dealCards() {
+      axios.get(`https://deckofcardsapi.com/api/deck/${this.deckID}/draw/?count=12`)
       .then(response => this.cards = response.data.cards)
       .catch(error => console.log(error))
     }
