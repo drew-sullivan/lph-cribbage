@@ -75,12 +75,10 @@ export default {
       axios.get(`https://deckofcardsapi.com/api/deck/${this.deckID}/draw/?count=${NUM_CARDS_TO_DRAW}`)
       .then(response => {
         const cards = response.data.cards
-        for (var i = 0; i < NUM_CARDS_TO_DRAW; i++) {
-          if (i % 2 == 0) {
-            this.cards.playerHand.push(cards[i])
-          } else {
-            this.cards.computerHand.push(cards[i])
-          }
+        for (var i = 0; i < cards.length; i++) {
+          const card = cards[i]
+          const hand = i % 2 == 0 ? this.cards.playerHand : this.cards.computerHand
+          hand.push(card)
         }
       })
       .catch(error => console.log(error))
