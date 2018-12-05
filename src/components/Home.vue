@@ -11,13 +11,23 @@
     <main role="main" class="container">
       <h1 class="mt-5">LPH Cribbage</h1>
       <p class="lead">Game's gonna go here</p>
-      <button class="start-btn btn btn-primary">Start Game</button>
+      <button class="start-btn btn btn-primary" v-on:click="startGame">Start Game</button>
       <template>
-        <ul v-if="cards && cards.length">
-          <li v-for="(card, index)  in cards" :key="index">
+
+        <h1>Computer Hand</h1>
+        <ul v-if="cards.playerHand && cards.playerHand.length">
+          <li v-for="(card, index) in cards.playerHand" :key="index">
             <img :src="card.image" alt="cardPic">
           </li>
         </ul>
+
+        <h1>Player Hand</h1>
+        <ul v-if="cards.computerHand && cards.computerHand.length">
+          <li v-for="(card, index) in cards.computerHand" :key="index">
+            <img :src="card.image" alt="cardPic">
+          </li>
+        </ul>
+
       </template>
     </main>
 
@@ -33,15 +43,13 @@
 import axios from 'axios';
 
 export default {
-  created() {
-    this.getDeckFromAPI()
-  },
   data() {
     return {
-      cards: [],
-      deckID: '',
-      player1Hand: [],
-      player2Hand: []
+      cards: {
+        playerHand: [],
+        computerHand: []
+      },
+      deckID: ''
     }
   },
   name: 'Home',
@@ -49,23 +57,32 @@ export default {
     msg: String
   },
   methods: {
-    getDeckFromAPI() {
-      axios.get('https://deckofcardsapi.com/api/deck/new/')
+    startGame: function (event) {
+      this.cards.computerHand = []
+      this.cards.playerHand = []
+      this.getNewDeck()
+    },
+    getNewDeck() {
+      axios.get('https://deckofcardsapi.com/api/deck/new/shuffle/?deck_count=1')
       .then(response => {
         this.deckID = response.data['deck_id']
-        this.printAllCards()
         this.dealCards()
       })
       .catch(error => console.log(error))
     },
-    printAllCards() {
-      axios.get(`https://deckofcardsapi.com/api/deck/${this.deckID}/draw/?count=52`)
-      .then(response => this.cards = response.data.cards)
-      .catch(error => console.log(error))
-    },
     dealCards() {
-      axios.get(`https://deckofcardsapi.com/api/deck/${this.deckID}/draw/?count=12`)
-      .then(response => this.cards = response.data.cards)
+      const NUM_CARDS_TO_DRAW = 12
+      axios.get(`https://deckofcardsapi.com/api/deck/${this.deckID}/draw/?count=${NUM_CARDS_TO_DRAW}`)
+      .then(response => {
+        const cards = response.data.cards
+        for (var i = 0; i < NUM_CARDS_TO_DRAW; i++) {
+          if (i % 2 == 0) {
+            this.cards.playerHand.push(cards[i])
+          } else {
+            this.cards.computerHand.push(cards[i])
+          }
+        }
+      })
       .catch(error => console.log(error))
     }
   }
