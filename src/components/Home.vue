@@ -12,24 +12,22 @@
       <h1 class="mt-5">LPH Cribbage</h1>
       <p class="lead">Game's gonna go here</p>
       <button class="start-btn btn btn-primary" v-on:click="startGame">Start Game</button>
-      <template>
 
         <h1>Computer Hand</h1>
-        <ul v-if="cards.playerHand && cards.playerHand.length">
-          <li v-for="(card, index) in cards.playerHand" :key="index">
-            <img :src="card.image" alt="cardPic">
+        <ul v-if="cards.playerHand && cards.playerHand.length" class="row">
+          <li v-for="(card, index) in cards.playerHand" :key="index" class="col-sm-2">
+            <img class="card-img" :src="card.image" alt="cardPic">
           </li>
         </ul>
 
         <h1>Player Hand</h1>
-        <ul v-if="cards.computerHand && cards.computerHand.length">
-          <li v-for="(card, index) in cards.computerHand" :key="index">
-            <img :src="card.image" alt="cardPic">
+        <ul v-if="cards.computerHand && cards.computerHand.length" class="row">
+          <li v-for="(card, index) in cards.playerHand" :key="index" class="col-sm-1">
+            <img class="card-img" :src="card.image" alt="cardPic">
           </li>
         </ul>
 
-      </template>
-    </main>
+    </main> <!-- .container -->
   </div>
 </template>
 
@@ -102,6 +100,10 @@ start-btn {
   display: flex;
   margin: 0 auto;
   align-items: center;
+}
+
+.card-img {
+  width: 150px;
 }
 
 /* Sticky footer styles
