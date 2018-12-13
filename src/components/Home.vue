@@ -1,41 +1,45 @@
 <template>
   <div class="table">
     <header>
-      <!-- Fixed navbar -->
       <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
         <a class="navbar-brand" href="/gotta-add-a-path-to-something-here">LPH Cribbage</a>
       </nav>
     </header>
 
-    <!-- Begin page content -->
     <main role="main" class="container">
       <h1 class="mt-5">LPH Cribbage</h1>
-      <p class="lead">Game's gonna go here</p>
-      <button class="start-btn btn btn-primary" v-on:click="startGame">Start Game</button>
-      <template>
+      <button class="start-btn btn btn-primary" @click="startGame" v-if="gameStarted == false">Start Game</button>
+      <button class="start-btn btn btn-primary" @click="startGame" v-if="gameStarted == true">Restart Game</button>
 
+      <div v-if="cards.playerHand && cards.playerHand.length">
         <h1>Computer Hand</h1>
-        <ul v-if="cards.playerHand && cards.playerHand.length">
-          <li v-for="(card, index) in cards.playerHand" :key="index">
-            <img :src="card.image" alt="cardPic">
-          </li>
+        <ul class="row">
+            <li v-for="(card, index) in cards.playerHand" :key="index" class="col col-sm card-list-item">
+              <img class="card-img" :src="card.image" alt="cardPic">
+            </li>
         </ul>
-
-        <h1>Player Hand</h1>
-        <ul v-if="cards.computerHand && cards.computerHand.length">
-          <li v-for="(card, index) in cards.computerHand" :key="index">
-            <img :src="card.image" alt="cardPic">
-          </li>
-        </ul>
-
-      </template>
-    </main>
-
-    <footer class="footer">
-      <div class="container">
-        <span class="text-muted">Footer stuff</span>
       </div>
-    </footer>
+
+      <div v-if="cards.computerHand && cards.computerHand.length">
+        <h1>Player Hand</h1>
+
+        <div v-if="selectedCards.length">
+          <ul class="row">
+            <li v-for="(card, index) in selectedCards" :key="index" class="col col-sm card-list-item">
+              <p>{{ card.code }}</p>
+            </li>
+          </ul>
+        </div>
+
+        <ul class="row">
+          <li v-for="(card, index) in cards.playerHand" :key="index" class="col col-sm card-list-item">
+            <img class="card-img" :src="card.image" alt="cardPic" @click="toggleCardSelection(card)">
+          </li>
+        </ul>
+
+      </div>
+
+    </main> <!-- .container -->
   </div>
 </template>
 
@@ -49,7 +53,10 @@ export default {
         playerHand: [],
         computerHand: []
       },
-      deckID: ''
+      deckID: '',
+      gameStarted: false,
+      selectedCards: [],
+      crib: []
     }
   },
   name: 'Home',
@@ -58,6 +65,7 @@ export default {
   },
   methods: {
     startGame: function (event) {
+      this.gameStarted = true
       this.cards.computerHand = []
       this.cards.playerHand = []
       this.getNewDeck()
@@ -82,6 +90,15 @@ export default {
         }
       })
       .catch(error => console.log(error))
+    },
+    toggleCardSelection(card) {
+      const index = this.selectedCards.indexOf(card)
+      if (index > -1) {
+        console.log(`card to be removed: ${card.code}`)
+        this.selectedCards.splice(index, 1)
+      } else {
+        this.selectedCards.push(card)
+      }
     }
   }
 }
@@ -108,6 +125,16 @@ start-btn {
   display: flex;
   margin: 0 auto;
   align-items: center;
+}
+
+.card-list-item {
+  padding: 0;
+}
+
+.card-img {
+  width: 150px;
+  /* margin-left: -146px; */
+  margin: 0;
 }
 
 /* Sticky footer styles
