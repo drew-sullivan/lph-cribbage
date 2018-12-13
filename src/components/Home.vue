@@ -1,31 +1,32 @@
 <template>
   <div class="table">
     <header>
-      <!-- Fixed navbar -->
       <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
         <a class="navbar-brand" href="/gotta-add-a-path-to-something-here">LPH Cribbage</a>
       </nav>
     </header>
 
-    <!-- Begin page content -->
     <main role="main" class="container">
       <h1 class="mt-5">LPH Cribbage</h1>
-      <p class="lead">Game's gonna go here</p>
       <button class="start-btn btn btn-primary" v-on:click="startGame">Start Game</button>
 
+      <div v-if="cards.playerHand && cards.playerHand.length">
         <h1>Computer Hand</h1>
-        <ul v-if="cards.playerHand && cards.playerHand.length" class="row">
-          <li v-for="(card, index) in cards.playerHand" :key="index" class="col-sm-2">
-            <img class="card-img" :src="card.image" alt="cardPic">
-          </li>
+        <ul class="row">
+            <li v-for="(card, index) in cards.playerHand" :key="index" class="col col-sm card-list-item">
+              <img class="card-img" :src="card.image" alt="cardPic">
+            </li>
         </ul>
+      </div>
 
+      <div v-if="cards.computerHand && cards.computerHand.length">
         <h1>Player Hand</h1>
-        <ul v-if="cards.computerHand && cards.computerHand.length" class="row">
-          <li v-for="(card, index) in cards.playerHand" :key="index" class="col-sm-1">
+        <ul class="row">
+          <li v-for="(card, index) in cards.playerHand" :key="index" class="col col-sm card-list-item">
             <img class="card-img" :src="card.image" alt="cardPic">
           </li>
         </ul>
+      </div>
 
     </main> <!-- .container -->
   </div>
@@ -102,8 +103,14 @@ start-btn {
   align-items: center;
 }
 
+.card-list-item {
+  padding: 0;
+}
+
 .card-img {
   width: 150px;
+  /* margin-left: -146px; */
+  margin: 0;
 }
 
 /* Sticky footer styles
