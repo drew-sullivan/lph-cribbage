@@ -8,7 +8,8 @@
 
     <main role="main" class="container">
       <h1 class="mt-5">LPH Cribbage</h1>
-      <button class="start-btn btn btn-primary" v-on:click="startGame">Start Game</button>
+      <button class="start-btn btn btn-primary" @click="startGame" v-if="gameStarted == false">Start Game</button>
+      <button class="start-btn btn btn-primary" @click="startGame" v-if="gameStarted == true">Restart Game</button>
 
       <div v-if="cards.playerHand && cards.playerHand.length">
         <h1>Computer Hand</h1>
@@ -23,7 +24,7 @@
         <h1>Player Hand</h1>
         <ul class="row">
           <li v-for="(card, index) in cards.playerHand" :key="index" class="col col-sm card-list-item">
-            <img class="card-img" :src="card.image" alt="cardPic">
+            <img class="card-img" :src="card.image" alt="cardPic" @click="printValue">
           </li>
         </ul>
       </div>
@@ -42,7 +43,8 @@ export default {
         playerHand: [],
         computerHand: []
       },
-      deckID: ''
+      deckID: '',
+      gameStarted: false
     }
   },
   name: 'Home',
@@ -51,6 +53,7 @@ export default {
   },
   methods: {
     startGame: function (event) {
+      this.gameStarted = true
       this.cards.computerHand = []
       this.cards.playerHand = []
       this.getNewDeck()
@@ -75,6 +78,9 @@ export default {
         }
       })
       .catch(error => console.log(error))
+    },
+    printValue: function () {
+      console.log('drew')
     }
   }
 }
