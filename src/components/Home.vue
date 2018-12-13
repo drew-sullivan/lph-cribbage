@@ -22,11 +22,21 @@
 
       <div v-if="cards.computerHand && cards.computerHand.length">
         <h1>Player Hand</h1>
+
+        <div v-if="selectedCards.length">
+          <ul class="row">
+            <li v-for="(card, index) in selectedCards" :key="index" class="col col-sm card-list-item">
+              <p>{{ card.code }}</p>
+            </li>
+          </ul>
+        </div>
+
         <ul class="row">
           <li v-for="(card, index) in cards.playerHand" :key="index" class="col col-sm card-list-item">
-            <img class="card-img" :src="card.image" alt="cardPic" @click="printValue">
+            <img class="card-img" :src="card.image" alt="cardPic" @click="toggleCardSelection(card)">
           </li>
         </ul>
+
       </div>
 
     </main> <!-- .container -->
@@ -44,7 +54,9 @@ export default {
         computerHand: []
       },
       deckID: '',
-      gameStarted: false
+      gameStarted: false,
+      selectedCards: [],
+      crib: []
     }
   },
   name: 'Home',
@@ -79,8 +91,14 @@ export default {
       })
       .catch(error => console.log(error))
     },
-    printValue: function () {
-      console.log('drew')
+    toggleCardSelection(card) {
+      const index = this.selectedCards.indexOf(card)
+      if (index > -1) {
+        console.log(`card to be removed: ${card.code}`)
+        this.selectedCards.splice(index, 1)
+      } else {
+        this.selectedCards.push(card)
+      }
     }
   }
 }
