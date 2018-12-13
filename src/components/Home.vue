@@ -11,10 +11,10 @@
       <button class="start-btn btn btn-primary" @click="startGame" v-if="gameStarted == false">Start Game</button>
       <button class="start-btn btn btn-primary" @click="startGame" v-if="gameStarted == true">Restart Game</button>
 
-      <div v-if="cards.playerHand && cards.playerHand.length">
+      <div v-if="cards.computerHand && cards.computerHand.length">
         <h1>Computer Hand</h1>
         <ul class="row">
-            <li v-for="(card, index) in cards.playerHand" :key="index" class="col col-sm card-list-item">
+            <li v-for="(card, index) in cards.computerHand" :key="index" class="col col-sm card-list-item">
               <img class="card-img" :src="card.image" alt="cardPic">
             </li>
         </ul>
@@ -36,7 +36,6 @@
             <img class="card-img" :src="card.image" alt="cardPic" @click="toggleCardSelection(card)">
           </li>
         </ul>
-
       </div>
 
     </main> <!-- .container -->
