@@ -102,6 +102,7 @@ export default {
     },
     sendSelectedCardsToCrib() {
       this.selectedCards.forEach(card => this.crib.push(card))
+      this.selectedCards = []
     }
   }
 }
