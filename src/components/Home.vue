@@ -3,42 +3,46 @@
     <header>
       <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
         <a class="navbar-brand" href="/gotta-add-a-path-to-something-here">LPH Cribbage</a>
+        <button class="start-btn btn btn-primary" @click="startGame" v-if="gameStarted == false">Start Game</button>
+        <button class="start-btn btn btn-primary" @click="startGame" v-if="gameStarted == true">Restart Game</button>
       </nav>
     </header>
 
     <main role="main" class="container">
-      <h1 class="mt-5">LPH Cribbage</h1>
-      <button class="start-btn btn btn-primary" @click="startGame" v-if="gameStarted == false">Start Game</button>
-      <button class="start-btn btn btn-primary" @click="startGame" v-if="gameStarted == true">Restart Game</button>
+      <div class="row">
+        <div class="col col-md-2">Crib-and-Deck</div>
 
-      <div v-if="cards.computerHand && cards.computerHand.length">
-        <h1>Computer Hand</h1>
-        <ul class="row">
-            <li v-for="(card, index) in cards.computerHand" :key="index" class="col col-sm card-list-item">
-              <img class="card-img" :src="card.image" alt="cardPic">
-            </li>
-        </ul>
-      </div>
+        <div class="hands col col-md-10">
+          <div v-if="cards.computerHand && cards.computerHand.length">
+            <h1>Computer Hand</h1>
+            <ul class="row justify-content-md-center">
+                <li v-for="(card, index) in cards.computerHand" :key="index" class="card-list-item">
+                  <img class="card-img" :src="card.image" alt="cardPic">
+                </li>
+            </ul>
+          </div>
 
-      <div v-if="cards.computerHand && cards.computerHand.length">
-        <h1>Player Hand</h1>
+          <div v-if="cards.computerHand && cards.computerHand.length">
+            <h1>Player Hand</h1>
 
-        <div v-if="selectedCards.length">
-          <ul class="row">
-            Selected:
-            <li v-for="(card, index) in selectedCards" :key="index">
-              <span>{{ card.code }}</span>
-            </li>
-            <button @click="sendSelectedCardsToCrib" class="btn btn-primary">Send to Crib</button>
-          </ul>
+            <div v-if="selectedCards.length">
+              <ul class="row">
+                Selected:
+                <li v-for="(card, index) in selectedCards" :key="index">
+                  <span>{{ card.code }}</span>
+                </li>
+                <button @click="sendSelectedCardsToCrib" class="btn btn-primary">Send to Crib</button>
+              </ul>
+            </div>
+
+            <ul class="row justify-content-md-center">
+              <li v-for="(card, index) in cards.playerHand" :key="index" class="card-list-item">
+                <img class="card-img" :src="card.image" alt="cardPic" @click="toggleCardSelection(card)">
+              </li>
+            </ul>
+          </div>
         </div>
-
-        <ul class="row">
-          <li v-for="(card, index) in cards.playerHand" :key="index" class="col col-sm card-list-item">
-            <img class="card-img" :src="card.image" alt="cardPic" @click="toggleCardSelection(card)">
-          </li>
-        </ul>
-      </div>
+      </div> <!-- .hands -->
 
     </main> <!-- .container -->
   </div>
@@ -133,12 +137,12 @@ start-btn {
 
 .card-list-item {
   padding: 0;
+  margin: 0;
 }
 
 .card-img {
-  width: 150px;
-  /* margin-left: -146px; */
-  margin: 0;
+  width: 120px;
+  margin-left: -100px;
 }
 
 /* Sticky footer styles
