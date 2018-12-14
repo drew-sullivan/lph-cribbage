@@ -61,7 +61,8 @@ export default {
       deckID: '',
       gameStarted: false,
       selectedCards: [],
-      crib: []
+      crib: [],
+      leftoverDeck: []
     }
   },
   name: 'Home',
@@ -107,7 +108,14 @@ export default {
     sendSelectedCardsToCrib() {
       this.selectedCards.forEach(card => this.crib.push(card))
       //grab cards computer's hand and add to crib
+      this.updateHands()
       this.selectedCards = []
+    },
+    updateHands() {
+      this.cards.playerHand = this.cards.playerHand.filter(card => !this.crib.includes(card))
+      this.cards.computerHand = this.cards.computerHand.filter(card => !this.crib.includes(card))
+      console.log("crib")
+      this.crib.forEach(card => console.log(card.code))
     }
   }
 }
