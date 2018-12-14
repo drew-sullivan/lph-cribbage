@@ -10,7 +10,7 @@
 
     <main role="main" class="container">
       <div class="row">
-        <div class="col col-md-2">Crib-and-Deck</div>
+        <div class="col col-md-2"></div>
 
         <div class="hands col col-md-10">
           <div v-if="cards.computerHand && cards.computerHand.length">
@@ -62,7 +62,8 @@ export default {
       gameStarted: false,
       selectedCards: [],
       crib: [],
-      leftoverDeck: []
+      leftoverDeck: [],
+      gameState: ''
     }
   },
   name: 'Home',
@@ -71,12 +72,14 @@ export default {
   },
   methods: {
     startGame: function () {
+      this.gameState = 'Not begun'
       this.gameStarted = true
       this.cards.computerHand = []
       this.cards.playerHand = []
       this.getNewDeck()
     },
     getNewDeck() {
+      this.gameState = 'Choosing cards to send to crib'
       axios.get('https://deckofcardsapi.com/api/deck/new/shuffle/?deck_count=1')
       .then(response => {
         this.deckID = response.data['deck_id']
@@ -98,6 +101,7 @@ export default {
       .catch(error => console.log(error))
     },
     toggleCardSelection(card) {
+      if (this.gameState != 'Choosing cards to send to crib') { return }
       const index = this.selectedCards.indexOf(card)
       if (index > -1) {
         this.selectedCards.splice(index, 1)
@@ -114,8 +118,7 @@ export default {
     updateHands() {
       this.cards.playerHand = this.cards.playerHand.filter(card => !this.crib.includes(card))
       this.cards.computerHand = this.cards.computerHand.filter(card => !this.crib.includes(card))
-      console.log("crib")
-      this.crib.forEach(card => console.log(card.code))
+      this.gameState = 'playing'
     }
   }
 }
