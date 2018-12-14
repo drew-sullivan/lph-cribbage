@@ -98,14 +98,15 @@ export default {
     },
     toggleCardSelection(card) {
       const index = this.selectedCards.indexOf(card)
-      if (this.selectedCards.length < 2) {
-        this.selectedCards.push(card)
-      } else if (this.selectedCards.length == 2 && index > -1) {
+      if (index > -1) {
         this.selectedCards.splice(index, 1)
+      } else if (this.selectedCards.length < 2) {
+        this.selectedCards.push(card)
       }
     },
     sendSelectedCardsToCrib() {
       this.selectedCards.forEach(card => this.crib.push(card))
+      //grab cards computer's hand and add to crib
       this.selectedCards = []
     }
   }
