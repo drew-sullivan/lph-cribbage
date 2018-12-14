@@ -25,9 +25,11 @@
 
         <div v-if="selectedCards.length">
           <ul class="row">
-            <li v-for="(card, index) in selectedCards" :key="index" class="col col-sm card-list-item">
-              <p>{{ card.code }}</p>
+            Selected:
+            <li v-for="(card, index) in selectedCards" :key="index">
+              <span>{{ card.code }}</span>
             </li>
+            <button @click="sendSelectedCardsToCrib" class="btn btn-primary">Send to Crib</button>
           </ul>
         </div>
 
@@ -92,12 +94,14 @@ export default {
     },
     toggleCardSelection(card) {
       const index = this.selectedCards.indexOf(card)
-      if (index > -1) {
-        console.log(`card to be removed: ${card.code}`)
-        this.selectedCards.splice(index, 1)
-      } else {
+      if (this.selectedCards.length < 2) {
         this.selectedCards.push(card)
+      } else if (this.selectedCards.length == 2 && index > -1) {
+        this.selectedCards.splice(index, 1)
       }
+    },
+    sendSelectedCardsToCrib() {
+      this.selectedCards.forEach(card => this.crib.push(card))
     }
   }
 }
