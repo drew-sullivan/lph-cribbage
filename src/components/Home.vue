@@ -65,7 +65,7 @@ export default {
     msg: String
   },
   methods: {
-    startGame: function (event) {
+    startGame: function () {
       this.gameStarted = true
       this.cards.computerHand = []
       this.cards.playerHand = []
