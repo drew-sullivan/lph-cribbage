@@ -107,7 +107,7 @@ export default {
     },
     sendSelectedCardsToCrib() {
       this.selectedCards.forEach(card => this.crib.push(card))
-      //grab cards computer's hand and add to crib
+      this.sendAISelectionToCrib()
       this.updateHands()
       this.selectedCards = []
     },
@@ -115,6 +115,15 @@ export default {
       this.cards.playerHand = this.cards.playerHand.filter(card => !this.crib.includes(card))
       this.cards.computerHand = this.cards.computerHand.filter(card => !this.crib.includes(card))
       this.gameState = 'playing'
+    },
+    sendAISelectionToCrib() {
+      //random right now
+      for (let i = 0; i < 2; i++) {
+        let randIndex = Math.floor(Math.random() * this.cards.computerHand.length)
+        const card = this.cards.computerHand[randIndex]
+        this.crib.push(card)
+        this.cards.computerHand.splice(randIndex, 1)
+      }
     }
   }
 }
