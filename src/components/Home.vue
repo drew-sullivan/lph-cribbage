@@ -10,9 +10,16 @@
 
     <main role="main" class="container">
       <div class="row">
-        <div class="col col-md-2"></div>
-        <div class="hands col col-md-6">
+        <div class="col col-md-2">
+          <div v-if="crib && crib.length">
+            <span class="row justify-content-md-center">
+              <img src="../assets/Card_back_01.svg" alt="card-back" class="card-back-img crib-top">
+              <img src="../assets/Card_back_01.svg" alt="card-back" class="card-back-img crib-bottom">
+            </span>
+          </div>
+        </div>
 
+        <div class="hands col col-md-6">
           <div v-if="cards.computerHand && cards.computerHand.length">
             <h1 class="hand-title">Computer Hand</h1>
             <ul class="row justify-content-md-center hand-name">
@@ -169,9 +176,18 @@ a {
   margin-top: -15px;
 }
 
+.card-back-img {
+  width: 120px;
+}
+
 .card-img {
   width: 120px;
   margin-left: -100px;
+}
+
+.crib-bottom {
+  margin-top: -299px;
+  margin-right: -9px;
 }
 
 .hand-name {
