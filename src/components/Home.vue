@@ -3,47 +3,43 @@
     <header>
       <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
         <a class="navbar-brand" href="/gotta-add-a-path-to-something-here">LPH Cribbage</a>
-        <button class="start-btn btn btn-primary" @click="startGame" v-if="gameStarted == false">Start Game</button>
-        <button class="start-btn btn btn-primary" @click="startGame" v-if="gameStarted == true">Restart Game</button>
+        <button class="btn btn-primary" @click="startGame" v-if="gameStarted == false">Start Game</button>
+        <button class="btn btn-primary" @click="startGame" v-if="gameStarted == true">Restart Game</button>
       </nav>
     </header>
 
     <main role="main" class="container">
       <div class="row">
         <div class="col col-md-2"></div>
-
-        <div class="hands col col-md-10">
-          <div v-if="cards.computerHand && cards.computerHand.length">
-            <h1>Computer Hand</h1>
-            <ul class="row justify-content-md-center">
-                <li v-for="(card, index) in cards.computerHand" :key="index" class="card-list-item">
-                  <img class="card-img" :src="card.image" alt="cardPic">
-                </li>
-            </ul>
-          </div>
+        <div class="hands col col-md-6">
 
           <div v-if="cards.computerHand && cards.computerHand.length">
-            <h1>Player Hand</h1>
-
-            <div v-if="selectedCards.length">
-              <ul class="row">
-                Selected:
-                <li v-for="(card, index) in selectedCards" :key="index">
-                  <span>{{ card.code }}</span>
-                </li>
-                <button @click="sendSelectedCardsToCrib" class="btn btn-primary">Send to Crib</button>
-              </ul>
-            </div>
-
-            <ul class="row justify-content-md-center">
-              <li v-for="(card, index) in cards.playerHand" :key="index" class="card-list-item">
-                <img class="card-img" :src="card.image" alt="cardPic" @click="toggleCardSelection(card)">
+            <h1 class="hand-title">Computer Hand</h1>
+            <ul class="row justify-content-md-center hand-name">
+              <li v-for="(card, index) in cards.computerHand" :key="index" class="card-list-item">
+                <img class="card-img" :src="card.image" alt="cardPic">
               </li>
             </ul>
           </div>
-        </div>
-      </div> <!-- .hands -->
 
+          <div v-if="cards.playerHand && cards.playerHand.length">
+
+            <h1 class="hand-title">Player Hand</h1>
+            <ul class="row justify-content-md-center hand-name">
+              <li v-for="(card, index) in cards.playerHand" :key="index" class="card-list-item">
+                <img class="card-img" :src="card.image" alt="cardPic"
+                     @click="toggleCardSelection(card)"
+                     :class="{ activeCard: selectedCards.includes(card) }">
+              </li>
+            </ul>
+
+            <div v-if="selectedCards.length == 2" class="send-to-crib-btn-box">
+              <button @click="sendSelectedCardsToCrib" class="btn btn-default">Send to Crib</button>
+            </div>
+
+          </div>
+        </div> <!-- .hands -->
+      </div> <!-- .row -->
     </main> <!-- .container -->
   </div>
 </template>
@@ -126,6 +122,11 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+h1 {
+  margin-top: 30px;
+  margin-bottom: 10px;
+}
+
 h3 {
   margin: 40px 0 0;
 }
@@ -141,10 +142,13 @@ a {
   color: #42b983;
 }
 
-start-btn {
-  display: flex;
-  margin: 0 auto;
-  align-items: center;
+.hand-title {
+  text-align: left;
+  font-size: 1.5rem;
+}
+
+.selected-cards {
+  padding-top: 7px;
 }
 
 .card-list-item {
@@ -152,35 +156,23 @@ start-btn {
   margin: 0;
 }
 
+.activeCard {
+  margin-top: -15px;
+}
+
 .card-img {
   width: 120px;
   margin-left: -100px;
 }
 
-/* Sticky footer styles
--------------------------------------------------- */
-html {
-  position: relative;
-  min-height: 100%;
-}
-body {
-  /* Margin bottom by footer height */
-  margin-bottom: 60px;
-}
-.footer {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  /* Set the fixed height of the footer here */
-  height: 60px;
-  line-height: 60px; /* Vertically center the text there */
-  background-color: #f5f5f5;
+.hand-name {
+  border-top: 2px solid #d3d3d3;
+  padding-top: 30px;
 }
 
-
-/* Custom page CSS
--------------------------------------------------- */
-/* Not required for template or sticky footer method. */
+.send-to-crib-btn-box {
+  text-align: left;
+}
 
 body > .container {
   padding: 60px 15px 0;
