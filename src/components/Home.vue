@@ -9,8 +9,11 @@
     </header>
 
     <main role="main" class="container">
-      <div class="row">
-        <div class="col col-md-2">
+      <div class="row justify-content-md-center">
+        <div class="col-xl-auto">
+          Variable width content
+        </div>
+        <!-- <div class="col-xl-auto">
           <div v-if="crib && crib.length">
             <span class="row justify-content-md-center">
               <img src="../assets/Card_back_01.svg" alt="card-back" class="card-back-img crib-top">
@@ -19,17 +22,17 @@
           </div>
         </div>
 
-        <div class="hands col col-md-6">
-          <div v-if="cards.computerHand && cards.computerHand.length">
+        <div class="hands">
+          <div v-if="cards.computerHand && cards.computerHand.length" class="col-xl-auto">
             <h1 class="hand-title">Computer Hand</h1>
             <ul class="row justify-content-md-center hand-name">
               <li v-for="(card, index) in cards.computerHand" :key="index" class="card-list-item">
-                <img class="card-img" :src="card.image" alt="cardPic">
+                <img class="card-img img-fluid col-xl-1" :src="card.image" alt="cardPic">
               </li>
             </ul>
           </div>
 
-          <div v-if="cards.playerHand && cards.playerHand.length">
+          <div v-if="cards.playerHand && cards.playerHand.length" class="col-xl-auto">
 
             <h1 class="hand-title">Player Hand</h1>
             <ul class="row justify-content-md-center hand-name">
@@ -45,7 +48,7 @@
             </div>
 
           </div>
-        </div> <!-- .hands -->
+        </div>  .hands -->
       </div> <!-- .row -->
     </main> <!-- .container -->
   </div>
