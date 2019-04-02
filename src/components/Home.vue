@@ -14,7 +14,7 @@
         <div class="hands col col-md-6">
 
           <div v-if="cards.computerHand && cards.computerHand.length">
-            <h1 class="hand-title">Computer Hand</h1>
+            <h1 class="hand-title">Computer</h1>
             <ul class="row hand-name list-inline">
               <li v-for="(card, index) in cards.computerHand" :key="index" class="card-list-item">
                 <img class="card-img" :src="card.image" alt="cardPic"
@@ -23,34 +23,18 @@
             </ul>
           </div> <!-- .computerHand -->
 
-          <div v-if="cards.playerHand && cards.playerHand.length">
-            <h1 class="hand-title">Player Hand
-              <div v-if="selectedCards.length == 2" class="send-to-crib-btn-box">
-                <button @click="sendSelectedCardsToCrib" class="btn btn-default">Send to Crib</button>
-              </div>
-            </h1>
-            <ul class="row hand-name list-inline">
-              <li v-for="(card, index) in cards.playerHand" :key="index" class="card-list-item">
-                <img class="card-img" :src="card.image" alt="cardPic"
-                     @click="toggleCardSelection(card)"
-                     :class="{ activeCard: selectedCards.includes(card),
-                               'non-first-hand-card': index !== 0 }">
-              </li>
-            </ul>
-          </div> <!-- .playerHand -->
+          <div v-if="crib && crib.length"></div> <!-- placeholder -->
 
-          <div v-if="cards.computerHand && cards.computerHand.length">
-            <h1 class="hand-title">Computer Hand</h1>
-            <ul class="row hand-name list-inline">
-              <li v-for="(card, index) in cards.computerHand" :key="index" class="card-list-item">
-                <img class="card-img" :src="card.image" alt="cardPic"
-                     :class="{ 'non-first-hand-card': index !== 0 }">
-              </li>
-            </ul>
-          </div> <!-- .computerHand -->
+          <div v-if="crib && crib.length" class="deck-location">
+            <img src="../assets/Card_back_01.svg" alt="card-back" class="card-back-img crib-top">
+            <img src="../assets/Card_back_01.svg" alt="card-back" class="card-back-img deck">
+            <img src="../assets/Card_back_01.svg" alt="card-back" class="card-back-img deck">
+            <img src="../assets/Card_back_01.svg" alt="card-back" class="card-back-img deck">
+            <img src="../assets/Card_back_01.svg" alt="card-back" class="card-back-img deck">
+          </div>
 
           <div v-if="cards.playerHand && cards.playerHand.length">
-            <h1 class="hand-title">Player Hand
+            <h1 class="hand-title">Player
               <div v-if="selectedCards.length == 2" class="send-to-crib-btn-box">
                 <button @click="sendSelectedCardsToCrib" class="btn btn-default">Send to Crib</button>
               </div>
@@ -219,6 +203,14 @@ a {
 .hand-name {
   border-top: 2px solid #d3d3d3;
   padding-top: 20px;
+}
+
+.deck {
+  margin-left: -67px;
+}
+
+.deck-location {
+  text-align: left;
 }
 
 .list-inline {
