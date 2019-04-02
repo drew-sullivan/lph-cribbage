@@ -10,14 +10,6 @@
 
     <main role="main" class="container">
       <div class="row">
-        <div class="col col-md-2">
-          <div v-if="crib && crib.length">
-            <span class="row justify-content-md-center">
-              <img src="../assets/Card_back_01.svg" alt="card-back" class="card-back-img crib-top">
-              <img src="../assets/Card_back_01.svg" alt="card-back" class="card-back-img crib-bottom">
-            </span>
-          </div>
-        </div>
 
         <div class="hands col col-md-6">
           <div v-if="cards.computerHand && cards.computerHand.length">
@@ -27,7 +19,7 @@
                 <img class="card-img" :src="card.image" alt="cardPic">
               </li>
             </ul>
-          </div>
+          </div> <!-- .computerHand -->
 
           <div v-if="cards.playerHand && cards.playerHand.length">
 
@@ -44,7 +36,7 @@
               <button @click="sendSelectedCardsToCrib" class="btn btn-default">Send to Crib</button>
             </div>
 
-          </div>
+          </div> <!-- .playerHand -->
         </div> <!-- .hands -->
       </div> <!-- .row -->
     </main> <!-- .container -->
@@ -88,7 +80,7 @@ export default {
         this.deckID = response.data['deck_id']
         this.dealCards()
       })
-      .catch(error => console.log(error))
+      .catch()
     },
     dealCards() {
       const NUM_CARDS_TO_DRAW = 12
@@ -101,7 +93,7 @@ export default {
           hand.push(card)
         }
       })
-      .catch(error => console.log(error))
+      .catch()
     },
     toggleCardSelection(card) {
       if (this.gameState != 'Choosing cards to send to crib') { return }
@@ -146,14 +138,17 @@ h1 {
 h3 {
   margin: 40px 0 0;
 }
+
 ul {
   list-style-type: none;
   padding: 0;
 }
+
 li {
   display: inline-block;
   margin: 0 10px;
 }
+
 a {
   color: #42b983;
 }
@@ -182,7 +177,6 @@ a {
 
 .card-img {
   width: 120px;
-  margin-left: -100px;
 }
 
 .crib-bottom {
@@ -200,7 +194,7 @@ a {
 }
 
 body > .container {
-  padding: 60px 15px 0;
+  padding: 60px 5px 0;
 }
 
 .footer > .container {
