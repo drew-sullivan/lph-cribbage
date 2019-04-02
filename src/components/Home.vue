@@ -25,12 +25,19 @@
 
           <div v-if="crib && crib.length"></div> <!-- placeholder -->
 
-          <div v-if="crib && crib.length && topOfDeck !== ''" class="deck-location">
-            <img src="../assets/Card_back_01.svg" alt="card-back" class="card-back-img">
-            <img src="../assets/Card_back_01.svg" alt="card-back" class="card-back-img deck">
-            <img src="../assets/Card_back_01.svg" alt="card-back" class="card-back-img deck">
-            <img src="../assets/Card_back_01.svg" alt="card-back" class="card-back-img deck">
-            <img :src="topOfDeck.image" alt="card-back" class="card-back-img deck">
+          <div class="row">
+            <div class="col-md-6">
+              <div v-if="crib && crib.length && topOfDeck !== ''" class="deck-location">
+                <img src="../assets/Card_back_01.svg" alt="card-back" class="card-back-img">
+                <img src="../assets/Card_back_01.svg" alt="card-back" class="card-back-img deck">
+                <img src="../assets/Card_back_01.svg" alt="card-back" class="card-back-img deck">
+                <img src="../assets/Card_back_01.svg" alt="card-back" class="card-back-img deck">
+                <img :src="topOfDeck.image" alt="card-back" class="card-back-img deck">
+                <span v-if="cardsInPlay && cardsInPlay.length" v-for="(card, index) in cardsInPlay" :key="index" class="card-list-item">
+                  <img class="card-img" :src="card.image" alt="cardPic">
+                </span>
+              </div>
+            </div>
           </div>
 
           <div v-if="cards.playerHand && cards.playerHand.length">
@@ -42,8 +49,8 @@
             <ul class="row hand-name list-inline">
               <li v-for="(card, index) in cards.playerHand" :key="index" class="card-list-item">
                 <img class="card-img" :src="card.image" alt="cardPic"
-                    @click="toggleCardSelection(card)"
-                    :class="{ activeCard: selectedCards.includes(card),
+                    @click="performActionWith(card)"
+                    :class="{ activeCard: selectedCards.includes(card) || cardsInPlay.includes(card),
                               'non-first-hand-card': index !== 0 }">
               </li>
             </ul>
@@ -72,7 +79,8 @@ export default {
       crib: [],
       topOfDeck: '',
       leftoverDeck: [],
-      gameState: ''
+      gameState: '',
+      cardsInPlay: []
     }
   },
   name: 'Home',
@@ -115,7 +123,7 @@ export default {
       })
       .catch()
     },
-    toggleCardSelection(card) {
+    toggleSelection(card) {
       if (this.gameState != 'Choosing cards to send to crib') { return }
       const index = this.selectedCards.indexOf(card)
       if (index > -1) {
@@ -129,11 +137,11 @@ export default {
       this.sendAISelectionToCrib()
       this.updateHands()
       this.selectedCards = []
+      this.gameState = 'Playing'
     },
     updateHands() {
       this.cards.playerHand = this.cards.playerHand.filter(card => !this.crib.includes(card))
       this.cards.computerHand = this.cards.computerHand.filter(card => !this.crib.includes(card))
-      this.gameState = 'playing'
     },
     sendAISelectionToCrib() {
       // random right now
@@ -142,6 +150,16 @@ export default {
         const card = this.cards.computerHand[randIndex]
         this.crib.push(card)
         this.cards.computerHand.splice(randIndex, 1)
+      }
+    },
+    play(card) {
+      this.cardsInPlay.push(card)
+    },
+    performActionWith(card) {
+      if (this.gameState == 'Playing') {
+        this.play(card)
+      } else if (this.gameState == 'Choosing cards to send to crib') {
+        this.toggleSelection(card)
       }
     }
   }
