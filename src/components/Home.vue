@@ -23,7 +23,12 @@
 
           <div v-if="cards.playerHand && cards.playerHand.length">
 
-            <h1 class="hand-title">Player Hand</h1>
+            <h1 class="hand-title">Player Hand
+              <div v-if="selectedCards.length == 2" class="send-to-crib-btn-box">
+                <button @click="sendSelectedCardsToCrib" class="btn btn-default">Send to Crib</button>
+              </div>
+            </h1>
+
             <ul class="row justify-content-md-center hand-name">
               <li v-for="(card, index) in cards.playerHand" :key="index" class="card-list-item">
                 <img class="card-img" :src="card.image" alt="cardPic"
@@ -32,9 +37,7 @@
               </li>
             </ul>
 
-            <div v-if="selectedCards.length == 2" class="send-to-crib-btn-box">
-              <button @click="sendSelectedCardsToCrib" class="btn btn-default">Send to Crib</button>
-            </div>
+
 
           </div> <!-- .playerHand -->
         </div> <!-- .hands -->
@@ -133,6 +136,7 @@ export default {
 h1 {
   margin-top: 30px;
   margin-bottom: 10px;
+  display: inline-block;
 }
 
 h3 {
