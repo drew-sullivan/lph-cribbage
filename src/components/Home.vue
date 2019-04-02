@@ -12,6 +12,7 @@
       <div class="row">
 
         <div class="hands col col-md-6">
+
           <div v-if="cards.computerHand && cards.computerHand.length">
             <h1 class="hand-title">Computer Hand</h1>
             <ul class="row hand-name list-inline">
@@ -23,13 +24,11 @@
           </div> <!-- .computerHand -->
 
           <div v-if="cards.playerHand && cards.playerHand.length">
-
             <h1 class="hand-title">Player Hand
               <div v-if="selectedCards.length == 2" class="send-to-crib-btn-box">
                 <button @click="sendSelectedCardsToCrib" class="btn btn-default">Send to Crib</button>
               </div>
             </h1>
-
             <ul class="row hand-name list-inline">
               <li v-for="(card, index) in cards.playerHand" :key="index" class="card-list-item">
                 <img class="card-img" :src="card.image" alt="cardPic"
@@ -38,9 +37,36 @@
                                'non-first-hand-card': index !== 0 }">
               </li>
             </ul>
-
           </div> <!-- .playerHand -->
+
+          <div v-if="cards.computerHand && cards.computerHand.length">
+            <h1 class="hand-title">Computer Hand</h1>
+            <ul class="row hand-name list-inline">
+              <li v-for="(card, index) in cards.computerHand" :key="index" class="card-list-item">
+                <img class="card-img" :src="card.image" alt="cardPic"
+                     :class="{ 'non-first-hand-card': index !== 0 }">
+              </li>
+            </ul>
+          </div> <!-- .computerHand -->
+
+          <div v-if="cards.playerHand && cards.playerHand.length">
+            <h1 class="hand-title">Player Hand
+              <div v-if="selectedCards.length == 2" class="send-to-crib-btn-box">
+                <button @click="sendSelectedCardsToCrib" class="btn btn-default">Send to Crib</button>
+              </div>
+            </h1>
+            <ul class="row hand-name list-inline">
+              <li v-for="(card, index) in cards.playerHand" :key="index" class="card-list-item">
+                <img class="card-img" :src="card.image" alt="cardPic"
+                     @click="toggleCardSelection(card)"
+                     :class="{ activeCard: selectedCards.includes(card),
+                               'non-first-hand-card': index !== 0 }">
+              </li>
+            </ul>
+          </div> <!-- .playerHand -->
+
         </div> <!-- .hands -->
+
       </div> <!-- .row -->
     </main> <!-- .container -->
   </div>
@@ -160,7 +186,7 @@ a {
 
 .hand-title {
   text-align: left;
-  font-size: 1.5rem;
+  font-size: 18px;
 }
 
 .selected-cards {
@@ -178,11 +204,11 @@ a {
 
 .card-img,
 .card-back-img {
-  width: 132px;
+  width: 68px;
 }
 
 .non-first-hand-card {
-  margin-left: -100px;
+  margin-left: -25px;
 }
 
 .crib-bottom {
