@@ -42,9 +42,9 @@
             <ul class="row hand-name list-inline">
               <li v-for="(card, index) in cards.playerHand" :key="index" class="card-list-item">
                 <img class="card-img" :src="card.image" alt="cardPic"
-                     @click="toggleCardSelection(card)"
-                     :class="{ activeCard: selectedCards.includes(card),
-                               'non-first-hand-card': index !== 0 }">
+                    @click="toggleCardSelection(card)"
+                    :class="{ activeCard: selectedCards.includes(card),
+                              'non-first-hand-card': index !== 0 }">
               </li>
             </ul>
           </div> <!-- .playerHand -->
@@ -84,6 +84,7 @@ export default {
       this.gameStarted = true
       this.cards.computerHand = []
       this.cards.playerHand = []
+      this.crib = []
       this.getNewDeck()
     },
     getNewDeck() {
@@ -188,16 +189,11 @@ a {
 
 .card-img,
 .card-back-img {
-  width: 68px;
+  width: 100px;
 }
 
 .non-first-hand-card {
-  margin-left: -25px;
-}
-
-.crib-bottom {
-  margin-top: -299px;
-  margin-right: -9px;
+  margin-left: -48px;
 }
 
 .hand-name {
@@ -206,7 +202,7 @@ a {
 }
 
 .deck {
-  margin-left: -67px;
+  margin-left: -99px;
 }
 
 .deck-location {
