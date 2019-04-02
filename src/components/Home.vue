@@ -25,12 +25,12 @@
 
           <div v-if="crib && crib.length"></div> <!-- placeholder -->
 
-          <div v-if="crib && crib.length" class="deck-location">
-            <img src="../assets/Card_back_01.svg" alt="card-back" class="card-back-img crib-top">
+          <div v-if="crib && crib.length && topOfDeck !== ''" class="deck-location">
+            <img src="../assets/Card_back_01.svg" alt="card-back" class="card-back-img">
             <img src="../assets/Card_back_01.svg" alt="card-back" class="card-back-img deck">
             <img src="../assets/Card_back_01.svg" alt="card-back" class="card-back-img deck">
             <img src="../assets/Card_back_01.svg" alt="card-back" class="card-back-img deck">
-            <img src="../assets/Card_back_01.svg" alt="card-back" class="card-back-img deck">
+            <img :src="topOfDeck.image" alt="card-back" class="card-back-img deck">
           </div>
 
           <div v-if="cards.playerHand && cards.playerHand.length">
@@ -70,6 +70,7 @@ export default {
       gameStarted: false,
       selectedCards: [],
       crib: [],
+      topOfDeck: '',
       leftoverDeck: [],
       gameState: ''
     }
@@ -97,12 +98,17 @@ export default {
       .catch()
     },
     dealCards() {
-      const NUM_CARDS_TO_DRAW = 12
+      // deal hands and store top card
+      const NUM_CARDS_TO_DRAW = 13
       axios.get(`https://deckofcardsapi.com/api/deck/${this.deckID}/draw/?count=${NUM_CARDS_TO_DRAW}`)
       .then(response => {
         const cards = response.data.cards
         for (var i = 0; i < cards.length; i++) {
           const card = cards[i]
+          if (i == NUM_CARDS_TO_DRAW - 1) {
+            this.topOfDeck = card
+            break
+          }
           const hand = i % 2 == 0 ? this.cards.playerHand : this.cards.computerHand
           hand.push(card)
         }
@@ -130,7 +136,7 @@ export default {
       this.gameState = 'playing'
     },
     sendAISelectionToCrib() {
-      //random right now
+      // random right now
       for (let i = 0; i < 2; i++) {
         let randIndex = Math.floor(Math.random() * this.cards.computerHand.length)
         const card = this.cards.computerHand[randIndex]
@@ -202,7 +208,7 @@ a {
 }
 
 .deck {
-  margin-left: -99px;
+  margin-left: -98px;
 }
 
 .deck-location {
