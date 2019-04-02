@@ -14,9 +14,10 @@
         <div class="hands col col-md-6">
           <div v-if="cards.computerHand && cards.computerHand.length">
             <h1 class="hand-title">Computer Hand</h1>
-            <ul class="row justify-content-md-center hand-name">
+            <ul class="row hand-name list-inline">
               <li v-for="(card, index) in cards.computerHand" :key="index" class="card-list-item">
-                <img class="card-img" :src="card.image" alt="cardPic">
+                <img class="card-img" :src="card.image" alt="cardPic"
+                     :class="{ 'non-first-hand-card': index !== 0 }">
               </li>
             </ul>
           </div> <!-- .computerHand -->
@@ -29,15 +30,14 @@
               </div>
             </h1>
 
-            <ul class="row justify-content-md-center hand-name">
+            <ul class="row hand-name list-inline">
               <li v-for="(card, index) in cards.playerHand" :key="index" class="card-list-item">
                 <img class="card-img" :src="card.image" alt="cardPic"
                      @click="toggleCardSelection(card)"
-                     :class="{ activeCard: selectedCards.includes(card) }">
+                     :class="{ activeCard: selectedCards.includes(card),
+                               'non-first-hand-card': index !== 0 }">
               </li>
             </ul>
-
-
 
           </div> <!-- .playerHand -->
         </div> <!-- .hands -->
@@ -134,7 +134,7 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 h1 {
-  margin-top: 30px;
+  margin-top: 10px;
   margin-bottom: 10px;
   display: inline-block;
 }
@@ -183,6 +183,10 @@ a {
   width: 120px;
 }
 
+.non-first-hand-card {
+  margin-left: -100px;
+}
+
 .crib-bottom {
   margin-top: -299px;
   margin-right: -9px;
@@ -190,7 +194,12 @@ a {
 
 .hand-name {
   border-top: 2px solid #d3d3d3;
-  padding-top: 30px;
+  padding-top: 20px;
+}
+
+.list-inline {
+  display: flex;
+  justify-content: center;
 }
 
 .send-to-crib-btn-box {
