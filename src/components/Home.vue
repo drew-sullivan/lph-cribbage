@@ -137,6 +137,7 @@ h1 {
   margin-top: 10px;
   margin-bottom: 10px;
   display: inline-block;
+  /* float: left; */
 }
 
 h3 {
@@ -175,12 +176,9 @@ a {
   margin-top: -15px;
 }
 
+.card-img,
 .card-back-img {
-  width: 120px;
-}
-
-.card-img {
-  width: 120px;
+  width: 132px;
 }
 
 .non-first-hand-card {
@@ -204,6 +202,8 @@ a {
 
 .send-to-crib-btn-box {
   text-align: left;
+  float: right;
+  margin-left: 15px;
 }
 
 body > .container {
