@@ -140,8 +140,14 @@ export default {
       this.gameState = 'Playing'
     },
     updateHands() {
-      this.cards.playerHand = this.cards.playerHand.filter(card => !this.crib.includes(card))
-      this.cards.computerHand = this.cards.computerHand.filter(card => !this.crib.includes(card))
+      if (this.gameState == 'Choosing cards to send to crib') {
+        this.cards.playerHand = this.cards.playerHand.filter(card => !this.selectedCards.includes(card))
+        this.cards.computerHand = this.cards.computerHand.filter(card => !this.selectedCards.includes(card))
+      } else if (this.gameState == 'Playing') {
+        this.cards.playerHand = this.cards.playerHand.filter(card => !this.cardsInPlay.includes(card))
+        this.cards.computerHand = this.cards.computerHand.filter(card => !this.cardsInPlay.includes(card))
+
+      }
     },
     sendAISelectionToCrib() {
       // random right now
@@ -158,6 +164,7 @@ export default {
     performActionWith(card) {
       if (this.gameState == 'Playing') {
         this.play(card)
+        this.updateHands
       } else if (this.gameState == 'Choosing cards to send to crib') {
         this.toggleSelection(card)
       }
