@@ -8,17 +8,57 @@
       </nav>
     </header>
 
-    <main role="main" class="container">
-      <div class="row">
+    <main role="main" class="container-fluid">
 
-        <div class="hands col col-md-6">
+        <h1 v-if="cards.computerHand && cards.computerHand.length" class="hand-title">Computer</h1>
+        <div v-if="cards.computerHand && cards.computerHand.length">
+          <ul class="hand-name list-inline">
+            <li v-for="(card, index) in cards.computerHand" :key="index" class="card-list-item">
+              <img class="card-img" :src="card.image" alt="cardPic"
+                    :class="{ 'non-first-hand-card': index !== 0 }">
+            </li>
+          </ul>
+        </div>
+        <div v-else>
+          <div class="hand-name">
+            <img src="../assets/Card_back_01.svg" alt="card-back" class="card-back-img placeholder">
+          </div>
+        </div> <!-- .computerHand -->
 
-          <h1 class="hand-title">Computer</h1>
-          <div v-if="cards.computerHand && cards.computerHand.length">
+        <div class="row"> <!-- deck and cards in play -->
+          <div class="col-md-6">
+            <div v-if="crib && crib.length && topOfDeck !== ''" class="deck-location">
+              <img src="../assets/Card_back_01.svg" alt="card-back" class="card-back-img">
+              <img src="../assets/Card_back_01.svg" alt="card-back" class="card-back-img deck">
+              <img src="../assets/Card_back_01.svg" alt="card-back" class="card-back-img deck">
+              <img src="../assets/Card_back_01.svg" alt="card-back" class="card-back-img deck">
+              <img :src="topOfDeck.image" alt="card-back" class="card-back-img deck">
+              <span v-if="cardsInPlay && cardsInPlay.length">
+                <span v-for="(card, index) in cardsInPlay" :key="index">
+                  <img class="card-img" :src="card.image" alt="cardPic"
+                        :class="{ 'card-in-play': index !== 0 }">
+                </span>
+              </span>
+            </div>
+            <div v-else class="deck-location">
+              <img src="../assets/Card_back_01.svg" alt="card-back" class="card-back-img placeholder">
+            </div>
+          </div>
+        </div> <!-- deck and cards in play -->
+
+        <div class="fixed-bottom">
+          <h1 v-if="cards.playerHand && cards.playerHand.length" class="hand-title">Player
+            <div v-if="selectedCards.length == 2" class="send-to-crib-btn-box">
+              <button @click="sendSelectedCardsToCrib" class="btn btn-default">Send to Crib</button>
+            </div>
+          </h1>
+          <div v-if="cards.playerHand && cards.playerHand.length">
             <ul class="hand-name list-inline">
-              <li v-for="(card, index) in cards.computerHand" :key="index" class="card-list-item">
+              <li v-for="(card, index) in cards.playerHand" :key="index" class="card-list-item">
                 <img class="card-img" :src="card.image" alt="cardPic"
-                     :class="{ 'non-first-hand-card': index !== 0 }">
+                    @click="performActionWith(card)"
+                    :class="{ activeCard: selectedCards.includes(card) || cardsInPlay.includes(card),
+                              'non-first-hand-card': index !== 0 }">
               </li>
             </ul>
           </div>
@@ -26,55 +66,9 @@
             <div class="hand-name">
               <img src="../assets/Card_back_01.svg" alt="card-back" class="card-back-img placeholder">
             </div>
-          </div> <!-- .computerHand -->
+          </div>
+        </div> <!-- .playerHand -->
 
-          <div class="row"> <!-- deck and cards in play -->
-            <div class="col-md-6">
-              <div v-if="crib && crib.length && topOfDeck !== ''" class="deck-location">
-                <img src="../assets/Card_back_01.svg" alt="card-back" class="card-back-img">
-                <img src="../assets/Card_back_01.svg" alt="card-back" class="card-back-img deck">
-                <img src="../assets/Card_back_01.svg" alt="card-back" class="card-back-img deck">
-                <img src="../assets/Card_back_01.svg" alt="card-back" class="card-back-img deck">
-                <img :src="topOfDeck.image" alt="card-back" class="card-back-img deck">
-                <span v-if="cardsInPlay && cardsInPlay.length">
-                  <span v-for="(card, index) in cardsInPlay" :key="index">
-                    <img class="card-img" :src="card.image" alt="cardPic"
-                         :class="{ 'card-in-play': index !== 0 }">
-                  </span>
-                </span>
-              </div>
-              <div v-else class="deck-location">
-                <img src="../assets/Card_back_01.svg" alt="card-back" class="card-back-img placeholder">
-              </div>
-            </div>
-          </div> <!-- deck and cards in play -->
-
-          <div class="fixed-bottom">
-            <h1 class="hand-title">Player
-              <div v-if="selectedCards.length == 2" class="send-to-crib-btn-box">
-                <button @click="sendSelectedCardsToCrib" class="btn btn-default">Send to Crib</button>
-              </div>
-            </h1>
-            <div v-if="cards.playerHand && cards.playerHand.length">
-              <ul class="hand-name list-inline">
-                <li v-for="(card, index) in cards.playerHand" :key="index" class="card-list-item">
-                  <img class="card-img" :src="card.image" alt="cardPic"
-                      @click="performActionWith(card)"
-                      :class="{ activeCard: selectedCards.includes(card) || cardsInPlay.includes(card),
-                                'non-first-hand-card': index !== 0 }">
-                </li>
-              </ul>
-            </div>
-            <div v-else>
-              <div class="hand-name">
-                <img src="../assets/Card_back_01.svg" alt="card-back" class="card-back-img placeholder">
-              </div>
-            </div>
-          </div> <!-- .playerHand -->
-
-        </div> <!-- .hands -->
-
-      </div> <!-- .row -->
     </main> <!-- .container -->
   </div>
 </template>
@@ -205,7 +199,6 @@ h1 {
   margin-top: 10px;
   margin-bottom: 10px;
   display: inline-block;
-  /* float: left; */
 }
 
 h3 {
@@ -258,8 +251,7 @@ a {
 }
 
 .hand-name {
-  border-top: 2px solid #d3d3d3;
-  padding-top: 20px;
+  padding-top: 8px;
 }
 
 .deck {
