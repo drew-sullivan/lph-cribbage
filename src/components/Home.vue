@@ -23,8 +23,6 @@
             </ul>
           </div> <!-- .computerHand -->
 
-          <div v-if="crib && crib.length"></div> <!-- placeholder -->
-
           <div class="row">
             <div class="col-md-6">
               <div v-if="crib && crib.length && topOfDeck !== ''" class="deck-location">
@@ -33,8 +31,11 @@
                 <img src="../assets/Card_back_01.svg" alt="card-back" class="card-back-img deck">
                 <img src="../assets/Card_back_01.svg" alt="card-back" class="card-back-img deck">
                 <img :src="topOfDeck.image" alt="card-back" class="card-back-img deck">
-                <span v-if="cardsInPlay && cardsInPlay.length" v-for="(card, index) in cardsInPlay" :key="index" class="card-list-item">
-                  <img class="card-img" :src="card.image" alt="cardPic">
+                <span v-if="cardsInPlay && cardsInPlay.length">
+                  <span v-for="(card, index) in cardsInPlay" :key="index">
+                    <img class="card-img" :src="card.image" alt="cardPic"
+                         :class="{ 'card-in-play': index !== 0 }">
+                  </span>
                 </span>
               </div>
             </div>
@@ -138,6 +139,7 @@ export default {
       this.updateHands()
       this.selectedCards = []
       this.gameState = 'Playing'
+      this.cardsInPlay = []
     },
     updateHands() {
       if (this.gameState == 'Choosing cards to send to crib') {
@@ -160,11 +162,20 @@ export default {
     },
     play(card) {
       this.cardsInPlay.push(card)
+      this.updateHands()
+    },
+    aiPlaysCard() {
+      // random right now
+      let randIndex = Math.floor(Math.random() * this.cards.computerHand.length)
+      const card = this.cards.computerHand[randIndex]
+      this.cardsInPlay.push(card)
+      this.cards.computerHand.splice(randIndex, 1)
+      this.updateHands()
     },
     performActionWith(card) {
       if (this.gameState == 'Playing') {
         this.play(card)
-        this.updateHands
+        this.aiPlaysCard()
       } else if (this.gameState == 'Choosing cards to send to crib') {
         this.toggleSelection(card)
       }
@@ -212,6 +223,10 @@ a {
 .card-list-item {
   padding: 0;
   margin: 0;
+}
+
+.card-in-play {
+  margin-left: -81px;
 }
 
 .activeCard {
