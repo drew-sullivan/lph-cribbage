@@ -13,17 +13,22 @@
 
         <div class="hands col col-md-6">
 
+          <h1 class="hand-title">Computer</h1>
           <div v-if="cards.computerHand && cards.computerHand.length">
-            <h1 class="hand-title">Computer</h1>
-            <ul class="row hand-name list-inline">
+            <ul class="hand-name list-inline">
               <li v-for="(card, index) in cards.computerHand" :key="index" class="card-list-item">
                 <img class="card-img" :src="card.image" alt="cardPic"
                      :class="{ 'non-first-hand-card': index !== 0 }">
               </li>
             </ul>
+          </div>
+          <div v-else>
+            <div class="hand-name">
+              <img src="../assets/Card_back_01.svg" alt="card-back" class="card-back-img placeholder">
+            </div>
           </div> <!-- .computerHand -->
 
-          <div class="row">
+          <div class="row"> <!-- deck and cards in play -->
             <div class="col-md-6">
               <div v-if="crib && crib.length && topOfDeck !== ''" class="deck-location">
                 <img src="../assets/Card_back_01.svg" alt="card-back" class="card-back-img">
@@ -38,23 +43,33 @@
                   </span>
                 </span>
               </div>
+              <div v-else class="deck-location">
+                <img src="../assets/Card_back_01.svg" alt="card-back" class="card-back-img placeholder">
+              </div>
             </div>
-          </div>
+          </div> <!-- deck and cards in play -->
 
-          <div v-if="cards.playerHand && cards.playerHand.length">
+          <div class="fixed-bottom">
             <h1 class="hand-title">Player
               <div v-if="selectedCards.length == 2" class="send-to-crib-btn-box">
                 <button @click="sendSelectedCardsToCrib" class="btn btn-default">Send to Crib</button>
               </div>
             </h1>
-            <ul class="row hand-name list-inline">
-              <li v-for="(card, index) in cards.playerHand" :key="index" class="card-list-item">
-                <img class="card-img" :src="card.image" alt="cardPic"
-                    @click="performActionWith(card)"
-                    :class="{ activeCard: selectedCards.includes(card) || cardsInPlay.includes(card),
-                              'non-first-hand-card': index !== 0 }">
-              </li>
-            </ul>
+            <div v-if="cards.playerHand && cards.playerHand.length">
+              <ul class="hand-name list-inline">
+                <li v-for="(card, index) in cards.playerHand" :key="index" class="card-list-item">
+                  <img class="card-img" :src="card.image" alt="cardPic"
+                      @click="performActionWith(card)"
+                      :class="{ activeCard: selectedCards.includes(card) || cardsInPlay.includes(card),
+                                'non-first-hand-card': index !== 0 }">
+                </li>
+              </ul>
+            </div>
+            <div v-else>
+              <div class="hand-name">
+                <img src="../assets/Card_back_01.svg" alt="card-back" class="card-back-img placeholder">
+              </div>
+            </div>
           </div> <!-- .playerHand -->
 
         </div> <!-- .hands -->
@@ -255,6 +270,10 @@ a {
   text-align: left;
 }
 
+.placeholder {
+  opacity: 0;
+}
+
 .list-inline {
   display: flex;
   justify-content: center;
@@ -264,6 +283,7 @@ a {
   text-align: left;
   float: right;
   margin-left: 15px;
+  margin-top: -8px;
 }
 
 body > .container {
