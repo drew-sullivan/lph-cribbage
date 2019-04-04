@@ -170,16 +170,22 @@ export default {
       }
     },
     play(card) {
-      this.cardsInPlay.push(card)
-      this.updateHands()
+      if (this.playerCanLegallyPlay(this.cards.playerHand, card)) {
+        this.cardsInPlay.push(card)
+        this.updateHands()
+        this.evaluateCardsInPlay()
+      }
     },
     aiPlaysCard() {
       // random right now
-      let randIndex = Math.floor(Math.random() * this.cards.computerHand.length)
+      const randIndex = Math.floor(Math.random() * this.cards.computerHand.length)
       const card = this.cards.computerHand[randIndex]
-      this.cardsInPlay.push(card)
-      this.cards.computerHand.splice(randIndex, 1)
-      this.updateHands()
+      if (this.playerCanLegallyPlay(this.cards.computerHand, card)) {
+        this.cardsInPlay.push(card)
+        this.cards.computerHand.splice(randIndex, 1)
+        this.updateHands()
+        this.evaluateCardsInPlay()
+      }
     },
     performActionWith(card) {
       if (this.gameState == 'Playing') {
@@ -188,6 +194,42 @@ export default {
       } else if (this.gameState == 'Choosing cards to send to crib') {
         this.toggleSelection(card)
       }
+    },
+    evaluateCardsInPlay() {
+      const total = this.getPointTotalForCardsInPlay()
+      if (total == 15) {
+        // award points to most recent player
+      } else if (total == 31) {
+        // award points to most recent player
+      } else {
+        // keep playing
+      }
+    },
+    getPointTotalForCardsInPlay() {
+      return this.cardsInPlay.reduce((accumulator, currCard) => accumulator + this.getValueOf(currCard), 0)
+    },
+    handContainsPlayableCard(hand) {
+      hand.forEach(card => {
+        if (this.isPlayable(card)) {
+          return true
+        }
+      })
+      return false
+    },
+    isPlayable(card) {
+      return this.getValueOf(card) + this.getPointTotalForCardsInPlay() <= 31
+    },
+    getValueOf(card) {
+      if (card.value == "KING" || card.value == "JACK" || card.value == "QUEEN") {
+        return 10
+      } else if (card.value == "ACE") {
+        return 1
+      } else {
+        return parseInt(card.value, 10)
+      }
+    },
+    playerCanLegallyPlay(hand, card) {
+      return this.handContainsPlayableCard(hand) && this.isPlayable(card)
     }
   }
 }
