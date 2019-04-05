@@ -67,7 +67,15 @@
               <img src="../assets/Card_back_01.svg" alt="card-back" class="card-back-img placeholder">
             </div>
           </div>
-        </div> <!-- .playerHand -->
+          <div class="score text-left">
+            <div class="col-sm" :class="{ 'is-dealer': playerIsDealer }">
+              Player: {{ scores.player }}
+            </div>
+            <div class="col-sm" :class="{ 'is-dealer': !playerIsDealer }">
+              Computer: {{ scores.computer }}
+            </div>
+          </div> <!-- .score -->
+        </div> <!-- .fixed-bottom -->
 
     </main> <!-- .container -->
   </div>
@@ -83,6 +91,10 @@ export default {
         playerHand: [],
         computerHand: []
       },
+      scores: {
+        player: 0,
+        computer: 0
+      },
       deckID: '',
       gameStarted: false,
       selectedCards: [],
@@ -90,7 +102,8 @@ export default {
       topOfDeck: '',
       leftoverDeck: [],
       gameState: '',
-      cardsInPlay: []
+      cardsInPlay: [],
+      playerIsDealer: true
     }
   },
   name: 'Home',
@@ -170,7 +183,7 @@ export default {
       }
     },
     play(card) {
-      if (this.playerCanLegallyPlay(this.cards.playerHand, card)) {
+      if (this.playerCanLegallyPlayFrom(this.cards.playerHand, card)) {
         this.cardsInPlay.push(card)
         this.updateHands()
         this.evaluateCardsInPlay()
@@ -180,7 +193,8 @@ export default {
       // random right now
       const randIndex = Math.floor(Math.random() * this.cards.computerHand.length)
       const card = this.cards.computerHand[randIndex]
-      if (this.playerCanLegallyPlay(this.cards.computerHand, card)) {
+      // console.log('aiPlays')
+      if (this.playerCanLegallyPlayFrom(this.cards.computerHand, card)) {
         this.cardsInPlay.push(card)
         this.cards.computerHand.splice(randIndex, 1)
         this.updateHands()
@@ -209,11 +223,11 @@ export default {
       return this.cardsInPlay.reduce((accumulator, currCard) => accumulator + this.getValueOf(currCard), 0)
     },
     handContainsPlayableCard(hand) {
-      hand.forEach(card => {
+      for (let card of hand) {
         if (this.isPlayable(card)) {
           return true
         }
-      })
+      }
       return false
     },
     isPlayable(card) {
@@ -228,7 +242,7 @@ export default {
         return parseInt(card.value, 10)
       }
     },
-    playerCanLegallyPlay(hand, card) {
+    playerCanLegallyPlayFrom(hand, card) {
       return this.handContainsPlayableCard(hand) && this.isPlayable(card)
     }
   }
@@ -292,6 +306,10 @@ a {
   margin-left: -48px;
 }
 
+.is-dealer {
+  background-color: red;
+}
+
 .hand-name {
   padding-top: 8px;
 }
@@ -302,6 +320,12 @@ a {
 
 .deck-location {
   text-align: left;
+}
+
+.score {
+  min-height: 60px;
+  background-color: #d3d3d3;
+  color: black;
 }
 
 .placeholder {
