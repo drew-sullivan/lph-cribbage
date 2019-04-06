@@ -68,10 +68,10 @@
             </div>
           </div>
           <div class="score text-left">
-            <div class="col-sm" :class="{ 'is-dealer': playerIsDealer }">
+            <div class="col-sm" :class="{ 'is-dealer': dealer === 'Player' }">
               Player: {{ scores.player }}
             </div>
-            <div class="col-sm" :class="{ 'is-dealer': !playerIsDealer }">
+            <div class="col-sm" :class="{ 'is-dealer': dealer === 'Computer' }">
               Computer: {{ scores.computer }}
             </div>
           </div> <!-- .score -->
@@ -103,7 +103,7 @@ export default {
       leftoverDeck: [],
       gameState: '',
       cardsInPlay: [],
-      playerIsDealer: true
+      dealer: 'Player'
     }
   },
   name: 'Home',
@@ -120,16 +120,14 @@ export default {
       this.getNewDeck()
     },
     getNewDeck() {
-      this.gameState = 'Choosing cards to send to crib'
+      this.gameState = 'Dealing'
       axios.get('https://deckofcardsapi.com/api/deck/new/shuffle/?deck_count=1')
       .then(response => {
         this.deckID = response.data['deck_id']
         this.dealCards()
       })
-      .catch()
     },
     dealCards() {
-      // deal hands and store top card
       const NUM_CARDS_TO_DRAW = 13
       axios.get(`https://deckofcardsapi.com/api/deck/${this.deckID}/draw/?count=${NUM_CARDS_TO_DRAW}`)
       .then(response => {
@@ -144,7 +142,7 @@ export default {
           hand.push(card)
         }
       })
-      .catch()
+      this.gameState = 'Choosing cards to send to crib'
     },
     toggleSelection(card) {
       if (this.gameState != 'Choosing cards to send to crib') { return }
@@ -162,6 +160,16 @@ export default {
       this.selectedCards = []
       this.gameState = 'Playing'
       this.cardsInPlay = []
+      this.evaluateTwoForHisHeels() // top of deck is a jack
+    },
+    evaluateTwoForHisHeels() {
+      if (this.topOfDeck.value == "JACK") {
+        if (this.dealer == 'Player') {
+          this.scores.player += 2
+        } else {
+          this.scores.computer += 2
+        }
+      }
     },
     updateHands() {
       if (this.gameState == 'Choosing cards to send to crib') {
