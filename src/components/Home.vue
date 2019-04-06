@@ -68,10 +68,10 @@
             </div>
           </div>
           <div class="score text-left">
-            <div class="col-sm" :class="{ 'is-dealer': dealer === 'Player' }">
+            <div class="col-sm" :class="{ 'is-playerIsDealer': playerIsDealer }">
               Player: {{ scores.player }}
             </div>
-            <div class="col-sm" :class="{ 'is-dealer': dealer === 'Computer' }">
+            <div class="col-sm" :class="{ 'is-playerIsDealer': !playerIsDealer }">
               Computer: {{ scores.computer }}
             </div>
           </div> <!-- .score -->
@@ -103,7 +103,8 @@ export default {
       leftoverDeck: [],
       gameState: '',
       cardsInPlay: [],
-      dealer: 'Player'
+      playerIsDealer: true,
+      playerIsCurrentPlayer: true
     }
   },
   name: 'Home',
@@ -164,7 +165,7 @@ export default {
     },
     evaluateTwoForHisHeels() {
       if (this.topOfDeck.value == "JACK") {
-        if (this.dealer == 'Player') {
+        if (this.playerIsDealer) {
           this.scores.player += 2
         } else {
           this.scores.computer += 2
@@ -314,7 +315,7 @@ a {
   margin-left: -48px;
 }
 
-.is-dealer {
+.is-playerIsDealer {
   background-color: red;
 }
 
