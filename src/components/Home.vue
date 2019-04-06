@@ -104,7 +104,12 @@ export default {
       gameState: '',
       cardsInPlay: [],
       playerIsDealer: true,
-      playerIsCurrentPlayer: true
+      playerIsCurrentPlayer: true,
+      playEvaluation: {
+        total: 0,
+        runLength: 0,
+        numKindInARow: 0
+      }
     }
   },
   name: 'Home',
@@ -226,21 +231,25 @@ export default {
       }
     },
     evaluateCardsInPlay() {
-      const total = this.getPointTotalForCardsInPlay()
-      let currentPlayerScore = this.playerIsCurrentPlayer ? this.scores.player : this.scores.computer
-      if (total == 15 || total == 31 || this.getNumOfAKindInARow() == 2) {
-        currentPlayerScore += 2
-      } else if (this.getNumOfAKindInARow() == 3) {
-        currentPlayerScore += 6
-      } else if (this.getNumOfAKindInARow() == 4) {
-        currentPlayerScore += 12
-      } else if (this.getRunLength() > 2) {
-        currentPlayerScore += this.getRunLength()
+      this.playEvaluation.total = this.getPointTotalForCardsInPlay()
+      this.playEvaluation.runLength = this.getRunLength()
+      this.playEvaluation.numKindInARow = this.getNumOfAKindInARow()
+      const total = this.playEvaluation.total
+      const runLength = this.playEvaluation.runLength
+      const numKindInARow = this.playEvaluation.numKindInARow
+      if (total == 15 || total == 31 || numKindInARow == 2) {
+        this.playerIsCurrentPlayer ? this.scores.player += 2 : this.scores.computer += 2
+      } else if (numKindInARow == 3) {
+        this.playerIsCurrentPlayer ? this.scores.player += 6 : this.scores.computer += 6
+      } else if (numKindInARow == 4) {
+        this.playerIsCurrentPlayer ? this.scores.player += 12 : this.scores.computer += 12
+      } else if (runLength > 2) {
+        this.playerIsCurrentPlayer ? this.scores.player += runLength : this.scores.computer += runLength
       }
     },
     getNumOfAKindInARow() {
+      let numOfAKindInARow = 1
       if (this.numCardsInPlay >= 2) {
-        let numOfAKindInARow = 1
         let latestCard = this.cardsInPlay[this.numCardsInPlay - 1]
         for (let i = this.numCardsInPlay - 2; i >= 0; i--) {
           if (this.cardsInPlay[i].value == latestCard.value) {
@@ -249,23 +258,23 @@ export default {
             break
           }
         }
-        return numOfAKindInARow
       }
+      return numOfAKindInARow
     },
     getRunLength() {
+      let runLength = 1
       if (this.numCardsInPlay >= 3) {
-        let runLength = 1
         let sortedCardsInPlay = this.cardsInPlay.sort((cardA, cardB) => cardA.value < cardB.value)
         let latestCard = sortedCardsInPlay[this.numCardsInPlay - 1]
-        for (i = this.numCardsInPlay - 2; i >= 0; i--) {
+        for (let i = this.numCardsInPlay - 2; i >= 0; i--) {
           if (this.getNumericValueOf(sortedCardsInPlay[i]) == this.getNumericValueOf(latestCard) - 1) {
             runLength += 1
           } else {
             break
           }
         }
-        return runLength
       }
+      return runLength
     },
     getPointTotalForCardsInPlay() {
       return this.cardsInPlay.reduce((accumulator, currCard) => accumulator + this.getNumericValueOf(currCard), 0)
