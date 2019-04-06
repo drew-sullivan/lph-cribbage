@@ -111,6 +111,11 @@ export default {
   props: {
     msg: String
   },
+  computed: {
+    numCardsInPlay: function () {
+      return this.cardsInPlay.length
+    }
+  },
   methods: {
     startGame: function () {
       this.gameState = 'Not begun'
@@ -196,6 +201,7 @@ export default {
         this.cardsInPlay.push(card)
         this.updateHands()
         this.evaluateCardsInPlay()
+        this.playerIsCurrentPlayer = false
       }
     },
     aiPlaysCard() {
@@ -208,6 +214,7 @@ export default {
         this.cards.computerHand.splice(randIndex, 1)
         this.updateHands()
         this.evaluateCardsInPlay()
+        this.playerIsCurrentPlayer = true
       }
     },
     performActionWith(card) {
@@ -220,16 +227,48 @@ export default {
     },
     evaluateCardsInPlay() {
       const total = this.getPointTotalForCardsInPlay()
-      if (total == 15) {
-        // award points to most recent player
-      } else if (total == 31) {
-        // award points to most recent player
-      } else {
-        // keep playing
+      let currentPlayerScore = this.playerIsCurrentPlayer ? this.scores.player : this.scores.computer
+      if (total == 15 || total == 31 || this.getNumOfAKindInARow() == 2) {
+        currentPlayerScore += 2
+      } else if (this.getNumOfAKindInARow() == 3) {
+        currentPlayerScore += 6
+      } else if (this.getNumOfAKindInARow() == 4) {
+        currentPlayerScore += 12
+      } else if (this.getRunLength() > 2) {
+        currentPlayerScore += this.getRunLength()
+      }
+    },
+    getNumOfAKindInARow() {
+      if (this.numCardsInPlay >= 2) {
+        let numOfAKindInARow = 1
+        let latestCard = this.cardsInPlay[this.numCardsInPlay - 1]
+        for (let i = this.numCardsInPlay - 2; i >= 0; i--) {
+          if (this.cardsInPlay[i].value == latestCard.value) {
+            numOfAKindInARow += 1
+          } else {
+            break
+          }
+        }
+        return numOfAKindInARow
+      }
+    },
+    getRunLength() {
+      if (this.numCardsInPlay >= 3) {
+        let runLength = 1
+        let sortedCardsInPlay = this.cardsInPlay.sort((cardA, cardB) => cardA.value < cardB.value)
+        let latestCard = sortedCardsInPlay[this.numCardsInPlay - 1]
+        for (i = this.numCardsInPlay - 2; i >= 0; i--) {
+          if (this.getNumericValueOf(sortedCardsInPlay[i]) == this.getNumericValueOf(latestCard) - 1) {
+            runLength += 1
+          } else {
+            break
+          }
+        }
+        return runLength
       }
     },
     getPointTotalForCardsInPlay() {
-      return this.cardsInPlay.reduce((accumulator, currCard) => accumulator + this.getValueOf(currCard), 0)
+      return this.cardsInPlay.reduce((accumulator, currCard) => accumulator + this.getNumericValueOf(currCard), 0)
     },
     handContainsPlayableCard(hand) {
       for (let card of hand) {
@@ -240,9 +279,9 @@ export default {
       return false
     },
     isPlayable(card) {
-      return this.getValueOf(card) + this.getPointTotalForCardsInPlay() <= 31
+      return this.getNumericValueOf(card) + this.getPointTotalForCardsInPlay() <= 31
     },
-    getValueOf(card) {
+    getNumericValueOf(card) {
       if (card.value == "KING" || card.value == "JACK" || card.value == "QUEEN") {
         return 10
       } else if (card.value == "ACE") {
