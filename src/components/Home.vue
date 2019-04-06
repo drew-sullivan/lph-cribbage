@@ -206,21 +206,22 @@ export default {
         this.cardsInPlay.push(card)
         this.updateHands()
         this.evaluateCardsInPlay()
-        this.playerIsCurrentPlayer = false
       }
+      this.playerIsCurrentPlayer = false
+      // alert -- player says 'Go'
     },
     aiPlaysCard() {
       // random right now
       const randIndex = Math.floor(Math.random() * this.cards.computerHand.length)
       const card = this.cards.computerHand[randIndex]
-      // console.log('aiPlays')
       if (this.playerCanLegallyPlayFrom(this.cards.computerHand, card)) {
         this.cardsInPlay.push(card)
         this.cards.computerHand.splice(randIndex, 1)
         this.updateHands()
         this.evaluateCardsInPlay()
-        this.playerIsCurrentPlayer = true
       }
+      this.playerIsCurrentPlayer = true
+      // alert -- computer says 'Go'
     },
     performActionWith(card) {
       if (this.gameState == 'Playing') {
@@ -262,19 +263,41 @@ export default {
       return numOfAKindInARow
     },
     getRunLength() {
-      let runLength = 1
-      if (this.numCardsInPlay >= 3) {
-        let sortedCardsInPlay = this.cardsInPlay.sort((cardA, cardB) => cardA.value < cardB.value)
-        let latestCard = sortedCardsInPlay[this.numCardsInPlay - 1]
-        for (let i = this.numCardsInPlay - 2; i >= 0; i--) {
-          if (this.getNumericValueOf(sortedCardsInPlay[i]) == this.getNumericValueOf(latestCard) - 1) {
-            runLength += 1
-          } else {
-            break
+      if (this.cardsInPlay.length < 3) { return -1 }
+
+      let index = 0
+      let cardData = this.getCardData(index, this.cardsInPlay)
+
+      while (cardData.numNums >= 3) {
+        const diff = cardData.high - cardData.low
+        const gap = cardData.numNums - 1
+        if (diff != gap) {
+          index++
+          if (this.cardsInPlay.length - index < 3) {
+            return -1
           }
+          cardData = this.getCardData(index, this.cardsInPlay)
+        } else {
+          break
         }
       }
-      return runLength
+      return cardData.numNums
+    },
+    // helper for getRunLength()
+    getCardData(index, cardsInPlay) {
+      let high = this.getRunValueOf(cardsInPlay[index])
+      let low = this.getRunValueOf(cardsInPlay[index])
+
+      for (let i = index; i < cardsInPlay.count; i++) {
+        const currCardValue = this.getRunValueOf(cardsInPlay[i])
+        if (currCardValue > high) {
+          high = currCardValue
+        }
+        if (currCardValue < low) {
+          low = currCardValue
+        }
+      }
+      return { high: high, low: low, numNums: cardsInPlay.length - index }
     },
     getPointTotalForCardsInPlay() {
       return this.cardsInPlay.reduce((accumulator, currCard) => accumulator + this.getNumericValueOf(currCard), 0)
@@ -297,6 +320,20 @@ export default {
         return 1
       } else {
         return parseInt(card.value, 10)
+      }
+    },
+    getRunValueOf(card) {
+      switch (card.value) {
+        case "KING":
+          return 13
+        case "QUEEN":
+          return 12
+        case "JACK":
+          return 11
+        case "ACE":
+          return 1
+        default:
+          return this.getNumericValueOf(card)
       }
     },
     playerCanLegallyPlayFrom(hand, card) {
