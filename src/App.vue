@@ -1,6 +1,7 @@
 <template>
   <div id="app">
     <Home msg="Welcome to Your Vue.js App"/>
+    <vue-snotify></vue-snotify>
   </div>
 </template>
 

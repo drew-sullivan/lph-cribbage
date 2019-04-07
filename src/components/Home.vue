@@ -136,6 +136,7 @@ export default {
       .then(response => {
         this.deckID = response.data['deck_id']
         this.dealCards()
+        this.toast('', 'New deck!')
       })
     },
     dealCards() {
@@ -340,6 +341,15 @@ export default {
     },
     playerCanLegallyPlayFrom(hand, card) {
       return this.handContainsPlayableCard(hand) && this.isPlayable(card)
+    },
+    toast(body, title) {
+      this.$snotify.info(
+        body,
+        title,
+        {
+          showProgressBar: false
+        }
+      )
     }
   }
 }
