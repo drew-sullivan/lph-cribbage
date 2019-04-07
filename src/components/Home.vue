@@ -306,41 +306,6 @@ export default {
     },
     getRunLength() {
       if (this.cardsInPlay.length < 3) { return -1 }
-
-      // const sampleCards = [
-      //   {
-      //       "image": "https://deckofcardsapi.com/static/img/KH.png",
-      //       "value": "8",
-      //       "suit": "HEARTS",
-      //       "code": "KH"
-      //   },
-      //   {
-      //       "image": "https://deckofcardsapi.com/static/img/8C.png",
-      //       "value": "4",
-      //       "suit": "CLUBS",
-      //       "code": "8C"
-      //   },
-      //   {
-      //       "image": "https://deckofcardsapi.com/static/img/KH.png",
-      //       "value": "6",
-      //       "suit": "HEARTS",
-      //       "code": "KH"
-      //   },
-      //   {
-      //       "image": "https://deckofcardsapi.com/static/img/8C.png",
-      //       "value": "7",
-      //       "suit": "CLUBS",
-      //       "code": "8C"
-      //   },
-      //   {
-      //       "image": "https://deckofcardsapi.com/static/img/KH.png",
-      //       "value": "5",
-      //       "suit": "HEARTS",
-      //       "code": "KH"
-      //   },
-      // ]
-
-
       let index = 0
       let cardData = this.getCardData(index, this.cardsInPlay)
 
