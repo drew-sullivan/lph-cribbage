@@ -206,9 +206,10 @@ export default {
         this.cardsInPlay.push(card)
         this.updateHands()
         this.evaluateCardsInPlay()
+      } else {
+        // alert -- player says 'Go'
       }
       this.playerIsCurrentPlayer = false
-      // alert -- player says 'Go'
     },
     aiPlaysCard() {
       // random right now
@@ -219,9 +220,10 @@ export default {
         this.cards.computerHand.splice(randIndex, 1)
         this.updateHands()
         this.evaluateCardsInPlay()
+      } else {
+        // alert -- computer says 'Go'
       }
       this.playerIsCurrentPlayer = true
-      // alert -- computer says 'Go'
     },
     performActionWith(card) {
       if (this.gameState == 'Playing') {
