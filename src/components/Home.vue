@@ -136,7 +136,6 @@ export default {
       .then(response => {
         this.deckID = response.data['deck_id']
         this.dealCards()
-        this.toast('', 'New deck!')
       })
     },
     dealCards() {
@@ -155,6 +154,7 @@ export default {
         }
       })
       this.gameState = 'Choosing cards to send to crib'
+      this.toast('Select cards to send to the crib', '')
     },
     toggleSelection(card) {
       if (this.gameState != 'Choosing cards to send to crib') { return }
@@ -173,13 +173,19 @@ export default {
       this.gameState = 'Playing'
       this.cardsInPlay = []
       this.evaluateTwoForHisHeels() // top of deck is a jack
+      if (!this.playerIsCurrentPlayer) {
+        this.aiPlaysCard()
+      }
+      this.toast('Choose a card to play')
     },
     evaluateTwoForHisHeels() {
       if (this.topOfDeck.value == "JACK") {
         if (this.playerIsDealer) {
           this.scores.player += 2
+          this.toast('Two for his heels -- player score + 2')
         } else {
           this.scores.computer += 2
+          this.toast('Two for his heels -- computer score + 2')
         }
       }
     },
@@ -203,28 +209,50 @@ export default {
       }
     },
     play(card) {
-      if (this.playerCanLegallyPlayFrom(this.cards.playerHand, card)) {
+      if (this.isPlayable(card)) {
         this.cardsInPlay.push(card)
         this.updateHands()
         this.evaluateCardsInPlay()
+        if (this.neitherPlayerCanPlay()) {
+            this.scores.computer += 1
+            this.toast('Computer gets 1 point for last')
+            this.cardsInPlay = []
+        }
       } else {
-        // alert -- player says 'Go'
+        this.toast('Try another card')
+        return
       }
-      this.playerIsCurrentPlayer = false
+
+      if (!this.playerCanLegallyPlayFrom(this.cards.computerHand)) {
+        this.toast('The computer says "Go"')
+        this.toast('Select another card')
+      } else {
+        this.playerIsCurrentPlayer = false
+      }
     },
     aiPlaysCard() {
       // random right now
       const randIndex = Math.floor(Math.random() * this.cards.computerHand.length)
       const card = this.cards.computerHand[randIndex]
-      if (this.playerCanLegallyPlayFrom(this.cards.computerHand, card)) {
+      if (this.isPlayable(card)) {
         this.cardsInPlay.push(card)
         this.cards.computerHand.splice(randIndex, 1)
         this.updateHands()
         this.evaluateCardsInPlay()
-      } else {
-        // alert -- computer says 'Go'
+        if (this.neitherPlayerCanPlay()) {
+          this.scores.player += 1
+          this.toast('Player get 1 point for last')
+          this.cardsInPlay = []
+        }
       }
-      this.playerIsCurrentPlayer = true
+
+      // if player can't legally play
+      if (!this.playerCanLegallyPlayFrom(this.cards.playerHand)) {
+        this.toast('Player says "Go"')
+        this.aiPlaysCard()
+      } else {
+        this.playerIsCurrentPlayer = true
+      }
     },
     performActionWith(card) {
       if (this.gameState == 'Playing') {
@@ -241,14 +269,24 @@ export default {
       const total = this.playEvaluation.total
       const runLength = this.playEvaluation.runLength
       const numKindInARow = this.playEvaluation.numKindInARow
-      if (total == 15 || total == 31 || numKindInARow == 2) {
+      if (numKindInARow == 2) {
         this.playerIsCurrentPlayer ? this.scores.player += 2 : this.scores.computer += 2
+        this.toast('Pair!')
+      } else if (total == 31) {
+        this.playerIsCurrentPlayer ? this.scores.player += 2 : this.scores.computer += 2
+        this.toast('31!')
+      } else if (total == 15) {
+        this.playerIsCurrentPlayer ? this.scores.player += 2 : this.scores.computer += 2
+        this.toast('15!')
       } else if (numKindInARow == 3) {
         this.playerIsCurrentPlayer ? this.scores.player += 6 : this.scores.computer += 6
+        this.toast('3 of a kind!')
       } else if (numKindInARow == 4) {
         this.playerIsCurrentPlayer ? this.scores.player += 12 : this.scores.computer += 12
+        this.toast('4 of a kind!')
       } else if (runLength > 2) {
         this.playerIsCurrentPlayer ? this.scores.player += runLength : this.scores.computer += runLength
+        this.toast(`${runLength} in a row!`)
       }
     },
     getNumOfAKindInARow() {
@@ -339,17 +377,23 @@ export default {
           return this.getNumericValueOf(card)
       }
     },
-    playerCanLegallyPlayFrom(hand, card) {
-      return this.handContainsPlayableCard(hand) && this.isPlayable(card)
+    playerCanLegallyPlayFrom(hand) {
+      return this.handContainsPlayableCard(hand)
     },
     toast(body, title) {
       this.$snotify.info(
         body,
         title,
         {
-          showProgressBar: false
+          showProgressBar: false,
+          timeout: 3000,
+          position: "centerCenter"
         }
       )
+    },
+    neitherPlayerCanPlay() {
+      return !this.handContainsPlayableCard(this.cards.playerHand) &&
+             !this.handContainsPlayableCard(this.cards.computerHand)
     }
   }
 }
