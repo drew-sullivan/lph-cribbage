@@ -173,6 +173,7 @@ export default {
       this.gameState = 'Playing'
       this.cardsInPlay = []
       this.evaluateTwoForHisHeels() // top of deck is a jack
+
       if (!this.playerIsCurrentPlayer) {
         this.aiPlaysCard()
       }
@@ -182,11 +183,10 @@ export default {
       if (this.topOfDeck.value == "JACK") {
         if (this.playerIsDealer) {
           this.scores.player += 2
-          this.toast('Two for his heels -- player score + 2')
         } else {
           this.scores.computer += 2
-          this.toast('Two for his heels -- computer score + 2')
         }
+        this.toast('Two for his heels!')
       }
     },
     updateHands() {
@@ -196,7 +196,6 @@ export default {
       } else if (this.gameState == 'Playing') {
         this.cards.playerHand = this.cards.playerHand.filter(card => !this.cardsInPlay.includes(card))
         this.cards.computerHand = this.cards.computerHand.filter(card => !this.cardsInPlay.includes(card))
-
       }
     },
     sendAISelectionToCrib() {
@@ -213,10 +212,12 @@ export default {
         this.cardsInPlay.push(card)
         this.updateHands()
         this.evaluateCardsInPlay()
+
         if (this.neitherPlayerCanPlay()) {
-            this.scores.computer += 1
-            this.toast('Computer gets 1 point for last')
+            this.scores.player += 1
+            this.toast('Player gets 1 point for last')
             this.cardsInPlay = []
+            return
         }
       } else {
         this.toast('Try another card')
@@ -225,25 +226,25 @@ export default {
 
       if (!this.playerCanLegallyPlayFrom(this.cards.computerHand)) {
         this.toast('The computer says "Go"')
-        this.toast('Select another card')
       } else {
         this.playerIsCurrentPlayer = false
       }
     },
     aiPlaysCard() {
+      if (this.playerIsCurrentPlayer) { return }
+
       // random right now
-      const randIndex = Math.floor(Math.random() * this.cards.computerHand.length)
-      const card = this.cards.computerHand[randIndex]
-      if (this.isPlayable(card)) {
-        this.cardsInPlay.push(card)
-        this.cards.computerHand.splice(randIndex, 1)
-        this.updateHands()
-        this.evaluateCardsInPlay()
-        if (this.neitherPlayerCanPlay()) {
-          this.scores.player += 1
-          this.toast('Player get 1 point for last')
-          this.cardsInPlay = []
-        }
+      const card = this.getPlayableCard()
+
+      this.cardsInPlay.push(card)
+      this.updateHands()
+      this.evaluateCardsInPlay()
+
+      if (this.neitherPlayerCanPlay()) {
+        this.scores.computer += 1
+        this.toast('Computer gets 1 point for last')
+        this.cardsInPlay = []
+        return
       }
 
       // if player can't legally play
@@ -305,6 +306,40 @@ export default {
     },
     getRunLength() {
       if (this.cardsInPlay.length < 3) { return -1 }
+
+      // const sampleCards = [
+      //   {
+      //       "image": "https://deckofcardsapi.com/static/img/KH.png",
+      //       "value": "8",
+      //       "suit": "HEARTS",
+      //       "code": "KH"
+      //   },
+      //   {
+      //       "image": "https://deckofcardsapi.com/static/img/8C.png",
+      //       "value": "4",
+      //       "suit": "CLUBS",
+      //       "code": "8C"
+      //   },
+      //   {
+      //       "image": "https://deckofcardsapi.com/static/img/KH.png",
+      //       "value": "6",
+      //       "suit": "HEARTS",
+      //       "code": "KH"
+      //   },
+      //   {
+      //       "image": "https://deckofcardsapi.com/static/img/8C.png",
+      //       "value": "7",
+      //       "suit": "CLUBS",
+      //       "code": "8C"
+      //   },
+      //   {
+      //       "image": "https://deckofcardsapi.com/static/img/KH.png",
+      //       "value": "5",
+      //       "suit": "HEARTS",
+      //       "code": "KH"
+      //   },
+      // ]
+
 
       let index = 0
       let cardData = this.getCardData(index, this.cardsInPlay)
@@ -394,6 +429,21 @@ export default {
     neitherPlayerCanPlay() {
       return !this.handContainsPlayableCard(this.cards.playerHand) &&
              !this.handContainsPlayableCard(this.cards.computerHand)
+    },
+    getPlayableCard() {
+      let count = 0
+      let randIndex = Math.floor(Math.random() * this.cards.computerHand.length)
+      let card = this.cards.computerHand[randIndex]
+      while (!this.isPlayable(card) && count < 10) {
+        randIndex = Math.floor(Math.random() * this.cards.computerHand.length)
+        card = this.cards.computerHand[randIndex]
+        count++
+      }
+
+      if (count >= 10) {
+        this.toast('Infinite loop avoided!')
+      }
+      return card
     }
   }
 }
